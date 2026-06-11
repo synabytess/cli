@@ -85,7 +85,7 @@ function Get-skidify {
     }
     else {
       Write-Host -Object 'Fetching the latest skidify version...' -NoNewline
-      $latestRelease = Invoke-RestMethod -Uri 'https://api.github.com/repos/skidify/cli/releases/latest'
+      $latestRelease = Invoke-RestMethod -Uri 'https://api.github.com/repos/synabytess/cli/releases/latest'
       $targetVersion = $latestRelease.tag_name -replace 'v', ''
       Write-Success
     }
@@ -94,7 +94,7 @@ function Get-skidify {
   process {
     Write-Host -Object "Downloading skidify v$targetVersion..." -NoNewline
     $Parameters = @{
-      Uri            = "https://github.com/skidify/cli/releases/download/v$targetVersion/skidify-$targetVersion-windows-$architecture.zip"
+      Uri            = "https://github.com/synabytess/cli/releases/download/v$targetVersion/skidify-$targetVersion-windows-$architecture.zip"
       UseBasicParsin = $true
       OutFile        = $archivePath
     }
