@@ -72,7 +72,7 @@ const RefreshTokenButton = ({ setTokenCallback }) => {
 
 	useEffect(() => {
 		if (buttonText === "Refreshing token...") {
-			Spicetify.CosmosAsync.get("https://apic-appmobile.musixmatch.com/ws/1.1/token.get?app_id=mac-ios-v2.0", null, {
+			skidify.CosmosAsync.get("https://apic-appmobile.musixmatch.com/ws/1.1/token.get?app_id=mac-ios-v2.0", null, {
 				Host: "apic-appmobile.musixmatch.com",
 				authority: "apic-appmobile.musixmatch.com",
 				"X-Cookie": "x-mxm-token-guid=",
@@ -174,7 +174,7 @@ const ConfigSlider = ({ name, defaultValue, onChange = () => {} }) => {
 				className: "col action",
 			},
 			react.createElement(ButtonSVG, {
-				icon: Spicetify.SVGIcons.check,
+				icon: skidify.SVGIcons.check,
 				active,
 				onClick: toggleState,
 			})
@@ -321,7 +321,7 @@ const ConfigAdjust = ({ name, defaultValue, step, min, max, onChange = () => {} 
 				value
 			),
 			react.createElement(SwapButton, {
-				icon: Spicetify.SVGIcons.plus2px,
+				icon: skidify.SVGIcons.plus2px,
 				onClick: () => adjust(1),
 				disabled: value === max,
 			})
@@ -331,7 +331,7 @@ const ConfigAdjust = ({ name, defaultValue, step, min, max, onChange = () => {} 
 
 const ConfigHotkey = ({ name, defaultValue, onChange = () => {} }) => {
 	const [value, setValue] = useState(defaultValue);
-	const [trap] = useState(new Spicetify.Mousetrap());
+	const [trap] = useState(new skidify.Mousetrap());
 
 	function record() {
 		trap.handleKey = (character, modifiers, e) => {
@@ -433,17 +433,17 @@ const ServiceOption = ({ item, onToggle, onSwap, isFirst = false, isLast = false
 					setTokenCallback,
 				}),
 				react.createElement(SwapButton, {
-					icon: Spicetify.SVGIcons["chart-up"],
+					icon: skidify.SVGIcons["chart-up"],
 					onClick: () => onSwap(item.name, -1),
 					disabled: isFirst,
 				}),
 				react.createElement(SwapButton, {
-					icon: Spicetify.SVGIcons["chart-down"],
+					icon: skidify.SVGIcons["chart-down"],
 					onClick: () => onSwap(item.name, 1),
 					disabled: isLast,
 				}),
 				react.createElement(ButtonSVG, {
-					icon: Spicetify.SVGIcons.check,
+					icon: skidify.SVGIcons.check,
 					active,
 					onClick: toggleActive,
 				})
@@ -494,7 +494,7 @@ const ServiceList = ({ itemsList, onListChange = () => {}, onToggle = () => {}, 
 };
 
 const corsProxyTemplate = () => {
-	const [proxyValue, setProxyValue] = react.useState(localStorage.getItem("spicetify:corsProxyTemplate") || "https://cors-proxy.spicetify.app/{url}");
+	const [proxyValue, setProxyValue] = react.useState(localStorage.getItem("skidify:corsProxyTemplate") || "https://cors-proxy.skidify.app/{url}");
 
 	return react.createElement("input", {
 		placeholder: "CORS Proxy Template",
@@ -503,8 +503,8 @@ const corsProxyTemplate = () => {
 			const value = event.target.value;
 			setProxyValue(value);
 
-			if (value === "" || !value) return localStorage.removeItem("spicetify:corsProxyTemplate");
-			localStorage.setItem("spicetify:corsProxyTemplate", value);
+			if (value === "" || !value) return localStorage.removeItem("skidify:corsProxyTemplate");
+			localStorage.setItem("skidify:corsProxyTemplate", value);
 		},
 	});
 };
@@ -726,12 +726,12 @@ function openConfig() {
 		react.createElement(corsProxyTemplate),
 		react.createElement("span", {
 			dangerouslySetInnerHTML: {
-				__html: "Spotify will reload its webview after applying. Leave empty to restore default: <code>https://cors-proxy.spicetify.app/{url}</code>",
+				__html: "Spotify will reload its webview after applying. Leave empty to restore default: <code>https://cors-proxy.skidify.app/{url}</code>",
 			},
 		})
 	);
 
-	Spicetify.PopupModal.display({
+	skidify.PopupModal.display({
 		title: "Lyrics Plus",
 		content: configContainer,
 		isLarge: true,

@@ -64,7 +64,7 @@ const ProviderMusixmatch = (() => {
 				.map((key) => `${key}=${encodeURIComponent(params[key])}`)
 				.join("&");
 
-		let body = await Spicetify.CosmosAsync.get(finalURL, null, headers);
+		let body = await skidify.CosmosAsync.get(finalURL, null, headers);
 
 		body = body.message.body.macro_calls;
 
@@ -246,7 +246,7 @@ const ProviderMusixmatch = (() => {
 				.map((key) => `${key}=${encodeURIComponent(params[key])}`)
 				.join("&");
 
-		let result = await Spicetify.CosmosAsync.get(finalURL, null, headers);
+		let result = await skidify.CosmosAsync.get(finalURL, null, headers);
 
 		if (result.message.header.status_code !== 200) {
 			return null;
@@ -396,7 +396,7 @@ const ProviderMusixmatch = (() => {
 				.map((key) => `${key}=${encodeURIComponent(params[key])}`)
 				.join("&");
 
-		let result = await Spicetify.CosmosAsync.get(finalURL, null, headers);
+		let result = await skidify.CosmosAsync.get(finalURL, null, headers);
 
 		if (result.message.header.status_code !== 200) return null;
 
@@ -442,7 +442,7 @@ const ProviderMusixmatch = (() => {
 				.join("&");
 
 		try {
-			let body = await Spicetify.CosmosAsync.get(finalURL, null, headers);
+			let body = await skidify.CosmosAsync.get(finalURL, null, headers);
 			if (body?.message?.body?.language_list) {
 				languageMap = {};
 				body.message.body.language_list.forEach((item) => {

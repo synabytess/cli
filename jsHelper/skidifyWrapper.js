@@ -1,16 +1,16 @@
-window.Spicetify = {
+window.skidify = {
 	Player: {
 		addEventListener: (type, callback) => {
-			if (!(type in Spicetify.Player.eventListeners)) {
-				Spicetify.Player.eventListeners[type] = [];
+			if (!(type in skidify.Player.eventListeners)) {
+				skidify.Player.eventListeners[type] = [];
 			}
-			Spicetify.Player.eventListeners[type].push(callback);
+			skidify.Player.eventListeners[type].push(callback);
 		},
 		dispatchEvent: (event) => {
-			if (!(event.type in Spicetify.Player.eventListeners)) {
+			if (!(event.type in skidify.Player.eventListeners)) {
 				return true;
 			}
-			const stack = Spicetify.Player.eventListeners[event.type];
+			const stack = skidify.Player.eventListeners[event.type];
 			for (let i = 0; i < stack.length; i++) {
 				if (typeof stack[i] === "function") {
 					stack[i](event);
@@ -20,54 +20,54 @@ window.Spicetify = {
 		},
 		eventListeners: {},
 		seek: (p) => {
-			const duration = p <= 1 ? Math.round(p * Spicetify.Player.origin._state.duration) : p;
-			Spicetify.Player.origin.seekTo(duration);
+			const duration = p <= 1 ? Math.round(p * skidify.Player.origin._state.duration) : p;
+			skidify.Player.origin.seekTo(duration);
 		},
 		getProgress: () =>
-			(Spicetify.Player.origin._state.isPaused ? 0 : Date.now() - Spicetify.Player.origin._state.timestamp) +
-			Spicetify.Player.origin._state.positionAsOfTimestamp,
-		getProgressPercent: () => Spicetify.Player.getProgress() / Spicetify.Player.origin._state.duration,
-		getDuration: () => Spicetify.Player.origin._state.duration,
+			(skidify.Player.origin._state.isPaused ? 0 : Date.now() - skidify.Player.origin._state.timestamp) +
+			skidify.Player.origin._state.positionAsOfTimestamp,
+		getProgressPercent: () => skidify.Player.getProgress() / skidify.Player.origin._state.duration,
+		getDuration: () => skidify.Player.origin._state.duration,
 		setVolume: (v) => {
-			Spicetify.Platform.PlaybackAPI.setVolume(v);
+			skidify.Platform.PlaybackAPI.setVolume(v);
 		},
 		increaseVolume: () => {
-			Spicetify.Platform.PlaybackAPI.raiseVolume();
+			skidify.Platform.PlaybackAPI.raiseVolume();
 		},
 		decreaseVolume: () => {
-			Spicetify.Platform.PlaybackAPI.lowerVolume();
+			skidify.Platform.PlaybackAPI.lowerVolume();
 		},
-		getVolume: () => Spicetify.Platform.PlaybackAPI._volume,
+		getVolume: () => skidify.Platform.PlaybackAPI._volume,
 		next: () => {
-			Spicetify.Player.origin.skipToNext();
+			skidify.Player.origin.skipToNext();
 		},
 		back: () => {
-			Spicetify.Player.origin.skipToPrevious();
+			skidify.Player.origin.skipToPrevious();
 		},
 		togglePlay: () => {
-			Spicetify.Player.isPlaying() ? Spicetify.Player.pause() : Spicetify.Player.play();
+			skidify.Player.isPlaying() ? skidify.Player.pause() : skidify.Player.play();
 		},
-		isPlaying: () => !Spicetify.Player.origin._state.isPaused,
+		isPlaying: () => !skidify.Player.origin._state.isPaused,
 		toggleShuffle: () => {
-			Spicetify.Player.origin.setShuffle(!Spicetify.Player.origin._state.shuffle);
+			skidify.Player.origin.setShuffle(!skidify.Player.origin._state.shuffle);
 		},
-		getShuffle: () => Spicetify.Player.origin._state.shuffle,
+		getShuffle: () => skidify.Player.origin._state.shuffle,
 		setShuffle: (b) => {
-			Spicetify.Player.origin.setShuffle(b);
+			skidify.Player.origin.setShuffle(b);
 		},
 		toggleRepeat: () => {
-			Spicetify.Player.origin.setRepeat((Spicetify.Player.origin._state.repeat + 1) % 3);
+			skidify.Player.origin.setRepeat((skidify.Player.origin._state.repeat + 1) % 3);
 		},
-		getRepeat: () => Spicetify.Player.origin._state.repeat,
+		getRepeat: () => skidify.Player.origin._state.repeat,
 		setRepeat: (r) => {
-			Spicetify.Player.origin.setRepeat(r);
+			skidify.Player.origin.setRepeat(r);
 		},
-		getMute: () => Spicetify.Player.getVolume() === 0,
+		getMute: () => skidify.Player.getVolume() === 0,
 		toggleMute: () => {
-			Spicetify.Player.setMute(!Spicetify.Player.getMute());
+			skidify.Player.setMute(!skidify.Player.getMute());
 		},
 		setMute: (b) => {
-			if (b !== Spicetify.Player.getMute()) {
+			if (b !== skidify.Player.getMute()) {
 				document.querySelector(".volume-bar__icon-button")?.click();
 			}
 		},
@@ -77,19 +77,19 @@ window.Spicetify = {
 			seconds -= minutes * 60;
 			return `${minutes}:${seconds > 9 ? "" : "0"}${String(seconds)}`;
 		},
-		getHeart: () => Spicetify.Player.origin._state.item.metadata["collection.in_collection"] === "true",
+		getHeart: () => skidify.Player.origin._state.item.metadata["collection.in_collection"] === "true",
 		pause: () => {
-			Spicetify.Player.origin.pause();
+			skidify.Player.origin.pause();
 		},
 		play: () => {
-			Spicetify.Player.origin.resume();
+			skidify.Player.origin.resume();
 		},
 		playUri: async (uri, context = {}, options = {}) => {
-			return await Spicetify.Player.origin.play({ uri: uri }, context, options);
+			return await skidify.Player.origin.play({ uri: uri }, context, options);
 		},
 		removeEventListener: (type, callback) => {
-			if (!(type in Spicetify.Player.eventListeners)) return;
-			const stack = Spicetify.Player.eventListeners[type];
+			if (!(type in skidify.Player.eventListeners)) return;
+			const stack = skidify.Player.eventListeners[type];
 			for (let i = 0; i < stack.length; i++) {
 				if (stack[i] === callback) {
 					stack.splice(i, 1);
@@ -98,21 +98,21 @@ window.Spicetify = {
 			}
 		},
 		skipBack: (amount = 15e3) => {
-			Spicetify.Player.origin.seekBackward(amount);
+			skidify.Player.origin.seekBackward(amount);
 		},
 		skipForward: (amount = 15e3) => {
-			Spicetify.Player.origin.seekForward(amount);
+			skidify.Player.origin.seekForward(amount);
 		},
 		setHeart: (b) => {
-			const uris = [Spicetify.Player.origin._state.item.uri];
+			const uris = [skidify.Player.origin._state.item.uri];
 			if (b) {
-				Spicetify.Platform.LibraryAPI.add({ uris });
+				skidify.Platform.LibraryAPI.add({ uris });
 			} else {
-				Spicetify.Platform.LibraryAPI.remove({ uris });
+				skidify.Platform.LibraryAPI.remove({ uris });
 			}
 		},
 		toggleHeart: () => {
-			Spicetify.Player.setHeart(!Spicetify.Player.getHeart());
+			skidify.Player.setHeart(!skidify.Player.getHeart());
 		},
 	},
 	test: () => {
@@ -122,7 +122,7 @@ window.Spicetify = {
 
 			for (const method of methods) {
 				if (objectToCheck[method] === undefined || objectToCheck[method] === null) {
-					console.error(`${name}.${method} is not available. Please open an issue in the Spicetify repository to inform us about it.`);
+					console.error(`${name}.${method} is not available. Please open an issue in the skidify repository to inform us about it.`);
 					count--;
 				}
 			}
@@ -137,8 +137,8 @@ window.Spicetify = {
 
 		const objectsToCheck = new Set([
 			{
-				objectToCheck: Spicetify,
-				name: "Spicetify",
+				objectToCheck: skidify,
+				name: "skidify",
 				methods: new Set([
 					"Player",
 					"addToQueue",
@@ -189,8 +189,8 @@ window.Spicetify = {
 				]),
 			},
 			{
-				objectToCheck: Spicetify.Player,
-				name: "Spicetify.Player",
+				objectToCheck: skidify.Player,
+				name: "skidify.Player",
 				methods: new Set([
 					"addEventListener",
 					"back",
@@ -231,8 +231,8 @@ window.Spicetify = {
 				]),
 			},
 			{
-				objectToCheck: Spicetify.ReactComponent,
-				name: "Spicetify.ReactComponent",
+				objectToCheck: skidify.ReactComponent,
+				name: "skidify.ReactComponent",
 				methods: new Set([
 					"RightClickMenu",
 					"ContextMenu",
@@ -268,8 +268,8 @@ window.Spicetify = {
 				]),
 			},
 			{
-				objectToCheck: Spicetify.ReactComponent.Cards,
-				name: "Spicetify.ReactComponent.Cards",
+				objectToCheck: skidify.ReactComponent.Cards,
+				name: "skidify.ReactComponent.Cards",
 				methods: new Set([
 					"Default",
 					"Hero",
@@ -286,8 +286,8 @@ window.Spicetify = {
 				]),
 			},
 			{
-				objectToCheck: Spicetify.ReactHook,
-				name: "Spicetify.ReactHook",
+				objectToCheck: skidify.ReactHook,
+				name: "skidify.ReactHook",
 				methods: new Set(["DragHandler", "useExtractedColor"]),
 			},
 		]);
@@ -307,54 +307,54 @@ window.Spicetify = {
 };
 
 (function waitForPlatform() {
-	if (!Spicetify._platform) {
+	if (!skidify._platform) {
 		setTimeout(waitForPlatform, 50);
 		return;
 	}
-	const { _platform } = Spicetify;
+	const { _platform } = skidify;
 	for (const key of Object.keys(_platform)) {
 		if (key.startsWith("get") && typeof _platform[key] === "function") {
-			Spicetify.Platform[key.slice(3)] = _platform[key]();
+			skidify.Platform[key.slice(3)] = _platform[key]();
 		} else {
-			Spicetify.Platform[key] = _platform[key];
+			skidify.Platform[key] = _platform[key];
 		}
 	}
 })();
 
 (function addMissingPlatformAPIs() {
-	if (!Spicetify.Platform?.version && !Spicetify.Platform?.Registry) {
+	if (!skidify.Platform?.version && !skidify.Platform?.Registry) {
 		setTimeout(addMissingPlatformAPIs, 50);
 		return;
 	}
-	const os = Spicetify.Platform.operatingSystem;
-	const version = Spicetify.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
+	const os = skidify.Platform.operatingSystem;
+	const version = skidify.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
 	if (version[0] === 1 && version[1] === 2 && version[2] < 38) return;
 
-	for (const [key, _] of Spicetify.Platform.Registry._map.entries()) {
+	for (const [key, _] of skidify.Platform.Registry._map.entries()) {
 		if (typeof key?.description !== "string" || !key?.description.endsWith("API")) continue;
 		const symbolName = key.description;
 		if (symbolName === "ExclusiveModeAPI" && os === "Linux") continue;
-		if (Object.hasOwn(Spicetify.Platform, symbolName)) continue;
+		if (Object.hasOwn(skidify.Platform, symbolName)) continue;
 		try {
-			const resolvedAPI = Spicetify.Platform.Registry.resolve(key);
-			Spicetify.Platform[symbolName] = resolvedAPI;
+			const resolvedAPI = skidify.Platform.Registry.resolve(key);
+			skidify.Platform[symbolName] = resolvedAPI;
 
-			console.debug(`[spicetifyWrapper] Resolved PlatformAPI from Registry: ${symbolName}`);
+			console.debug(`[skidifyWrapper] Resolved PlatformAPI from Registry: ${symbolName}`);
 		} catch (err) {
-			console.error(`[spicetifyWrapper] Error resolving PlatformAPI from Registry: ${symbolName}`, err);
+			console.error(`[skidifyWrapper] Error resolving PlatformAPI from Registry: ${symbolName}`, err);
 		}
 	}
 })();
 
 // Based on https://blog.aziz.tn/2025/01/spotify-fix-lagging-issue-on-scrolling.html
 function applyScrollingFix() {
-	if (!Spicetify.Platform?.version) {
+	if (!skidify.Platform?.version) {
 		setTimeout(applyScrollingFix, 50);
 		return;
 	}
 
 	// Run only for 1.2.56 and lower
-	const version = Spicetify.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
+	const version = skidify.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
 	if (version[1] >= 2 && version[2] >= 57) return;
 
 	const scrollableElements = Array.from(document.querySelectorAll("*")).filter((el) => {
@@ -401,12 +401,12 @@ window.addEventListener("popstate", () => {
 applyScrollingFix();
 
 (async function addProxyCosmos() {
-	if (!Spicetify.Player.origin?._cosmos && !Spicetify.Platform?.Registry) {
+	if (!skidify.Player.origin?._cosmos && !skidify.Platform?.Registry) {
 		setTimeout(addProxyCosmos, 50);
 		return;
 	}
 
-	const _cosmos = Spicetify.Player.origin?._cosmos ?? Spicetify.Platform?.Registry.resolve(Symbol.for("Cosmos"));
+	const _cosmos = skidify.Player.origin?._cosmos ?? skidify.Platform?.Registry.resolve(Symbol.for("Cosmos"));
 
 	const allowedMethodsMap = {
 		get: "get",
@@ -423,13 +423,13 @@ applyScrollingFix();
 			const internalFetch = Reflect.get(target, prop, receiver);
 
 			if (typeof internalFetch !== "function" || !allowedMethodsSet.has(prop)) return internalFetch;
-			const version = Spicetify.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
+			const version = skidify.Platform.version.split(".").map((i) => Number.parseInt(i, 10));
 			if (version[1] >= 2 && version[2] < 31) return internalFetch;
 
 			return async function (url, body) {
 				const urlObj = new URL(url);
 
-				const corsProxyURLTemplate = window.localStorage.getItem("spicetify:corsProxyTemplate") ?? "https://cors-proxy.spicetify.app/{url}";
+				const corsProxyURLTemplate = window.localStorage.getItem("skidify:corsProxyTemplate") ?? "https://cors-proxy.skidify.app/{url}";
 				const isWebAPI = urlObj.hostname === "api.spotify.com";
 				const isSpClientAPI = urlObj.hostname.includes("spotify.com") && urlObj.hostname.includes("spclient");
 				const isInternalURL = internalEndpoints.has(urlObj.protocol);
@@ -461,18 +461,18 @@ applyScrollingFix();
 					try {
 						new URL(finalURL);
 					} catch {
-						console.error("[spicetifyWrapper] Invalid CORS Proxy URL template");
+						console.error("[skidifyWrapper] Invalid CORS Proxy URL template");
 					}
 				}
 
-				const Authorization = `Bearer ${Spicetify.Platform.AuthorizationAPI.getState().token.accessToken}`;
+				const Authorization = `Bearer ${skidify.Platform.AuthorizationAPI.getState().token.accessToken}`;
 				let injectedHeaders = {};
 				if (isWebAPI) injectedHeaders = { Authorization };
 				if (isSpClientAPI) {
 					injectedHeaders = {
 						Authorization,
-						"Spotify-App-Version": Spicetify.Platform.version,
-						"App-Platform": Spicetify.Platform.PlatformData.app_platform,
+						"Spotify-App-Version": skidify.Platform.version,
+						"App-Platform": skidify.Platform.PlatformData.app_platform,
 					};
 				}
 				Object.assign(options.headers, injectedHeaders);
@@ -497,11 +497,11 @@ applyScrollingFix();
 		},
 	};
 
-	while (!Spicetify.Player.origin) await new Promise((r) => setTimeout(r, 50));
-	Spicetify.Player.origin._cosmos = new Proxy(_cosmos, handler);
-	Object.defineProperty(Spicetify, "CosmosAsync", {
+	while (!skidify.Player.origin) await new Promise((r) => setTimeout(r, 50));
+	skidify.Player.origin._cosmos = new Proxy(_cosmos, handler);
+	Object.defineProperty(skidify, "CosmosAsync", {
 		get: () => {
-			return Spicetify.Player.origin?._cosmos;
+			return skidify.Player.origin?._cosmos;
 		},
 	});
 })();
@@ -526,7 +526,7 @@ const fnStr = (f) => {
 	// Force all webpack modules to load
 	const require = webpackChunkclient_web.push([[Symbol()], {}, (re) => re]);
 	while (!require.m) await new Promise((r) => setTimeout(r, 50));
-	console.log("[spicetifyWrapper] Waiting for required webpack modules to load");
+	console.log("[skidifyWrapper] Waiting for required webpack modules to load");
 	let webpackDidCallback = false;
 	// https://github.com/webpack/webpack/blob/main/lib/runtime/OnChunksLoadedRuntimeModule.js
 	require.O(
@@ -542,15 +542,15 @@ const fnStr = (f) => {
 	let cache = Object.keys(require.m).map((id) => require(id));
 
 	// For _renderNavLinks to work
-	Spicetify.React = cache.find((m) => m?.useMemo);
+	skidify.React = cache.find((m) => m?.useMemo);
 
 	while (!webpackDidCallback) {
 		await new Promise((r) => setTimeout(r, 100));
 	}
-	console.log("[spicetifyWrapper] All required webpack modules loaded");
+	console.log("[skidifyWrapper] All required webpack modules loaded");
 	chunks = Object.entries(require.m);
 	cache = Object.keys(require.m).map((id) => require(id));
-	Spicetify.Events.platformLoaded.fire();
+	skidify.Events.platformLoaded.fire();
 
 	const modules = cache
 		.filter((module) => typeof module === "object")
@@ -665,41 +665,41 @@ const fnStr = (f) => {
 			if (stylesInjected) return;
 			stylesInjected = true;
 			const style = document.createElement("style");
-			style.className = "spicetify-scrollable-container";
+			style.className = "skidify-scrollable-container";
 			style.textContent = `
-.spicetify-sc-contentArea { overflow: hidden; position: relative; }
-.spicetify-sc-scroller { display: flex; align-items: center; overflow-x: auto; scrollbar-width: none; white-space: nowrap; width: 100%; -ms-overflow-style: none; overscroll-behavior-x: contain; will-change: transform; }
-@media (prefers-reduced-motion: no-preference) { .spicetify-sc-scroller { scroll-behavior: smooth; } }
-.spicetify-sc-scroller::-webkit-scrollbar { display: none; }
-.spicetify-sc-scroller.spicetify-sc-snap { scroll-snap-type: inline mandatory; }
-.spicetify-sc-scroller.spicetify-sc-snap .spicetify-sc-snapCenter [data-carousel-item] { scroll-snap-align: center; }
-.spicetify-sc-scroller.spicetify-sc-snap .spicetify-sc-snapStart [data-carousel-item] { scroll-snap-align: start; }
-.spicetify-sc-scroller.spicetify-sc-wheelEnabled { overscroll-behavior: contain; }
-.spicetify-sc-scroller.spicetify-sc-maskGradient { --sc-start-color: #000; --sc-end-color: #000; -webkit-mask-composite: source-in, xor; mask-composite: intersect; -webkit-mask-image: linear-gradient(90deg, var(--sc-start-color) 0, #000 120px), linear-gradient(90deg, #000 calc(100% - 120px), var(--sc-end-color) 100%); mask-image: linear-gradient(90deg, var(--sc-start-color) 0, #000 120px), linear-gradient(90deg, #000 calc(100% - 120px), var(--sc-end-color) 100%); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
-.spicetify-sc-scroller.spicetify-sc-maskGradient.spicetify-sc-maskStart { --sc-start-color: transparent; }
-.spicetify-sc-scroller.spicetify-sc-maskGradient.spicetify-sc-maskEnd { --sc-end-color: transparent; }
-.spicetify-sc-linearGradient::before, .spicetify-sc-linearGradient::after { bottom: 0; content: ""; height: 100%; opacity: 0; pointer-events: none; position: absolute; top: 0; transition: opacity .15s ease-out; width: 120px; z-index: 2; }
-.spicetify-sc-linearGradient::before { background: linear-gradient(90deg, var(--carousel-start-chevron-gradient, var(--spice-main)) 0, transparent 100%); inset-inline-start: 0; }
-.spicetify-sc-linearGradient::after { background: linear-gradient(-90deg, var(--carousel-end-chevron-gradient, var(--spice-main)) 0, transparent 100%); inset-inline-end: 0; }
-.spicetify-sc-linearGradient.spicetify-sc-lgStart::before { opacity: 1; }
-.spicetify-sc-linearGradient.spicetify-sc-lgEnd::after { opacity: 1; }
-.spicetify-sc-carousel { bottom: 0; left: 0; position: absolute; right: 0; top: 0; justify-content: space-between; align-items: center; display: flex; pointer-events: none; }
-.spicetify-sc-chevronBtn { display: flex; border: none; border-radius: 50%; cursor: pointer; justify-content: center; align-items: center; backdrop-filter: var(--chevrons-button-backdrop-filter, none); background: transparent; background-color: var(--chevrons-button-color, var(--background-elevated-base)); height: 24px; opacity: 0; position: relative; transition: color .15s ease-out, opacity .15s ease-out, background-color .15s ease-out, translate .15s ease-out; translate: 0; width: 24px; z-index: 3; pointer-events: none; color: var(--text-base, #fff); }
-.spicetify-sc-chevronBtn > * { opacity: .7; z-index: 2; }
-.spicetify-sc-chevronBtn:hover { background-color: var(--chevrons-button-hover-color, var(--background-elevated-highlight)); }
-.spicetify-sc-chevronBtn:hover > * { opacity: 1; }
-.spicetify-sc-chevronBtn.spicetify-sc-chevronVisible { opacity: 1; pointer-events: auto; }
-.spicetify-sc-onHover .spicetify-sc-chevronBtn { opacity: 0; }
-.spicetify-sc-contentArea:hover .spicetify-sc-onHover .spicetify-sc-chevronBtn.spicetify-sc-chevronVisible { opacity: 1; }
-.spicetify-sc-contentArea:hover .spicetify-sc-onHover .spicetify-sc-chevronStart.spicetify-sc-chevronVisible { translate: 8px; }
-.spicetify-sc-contentArea:hover .spicetify-sc-onHover .spicetify-sc-chevronEnd.spicetify-sc-chevronVisible { translate: -8px; }
-.spicetify-sc-scroller > div[role="presentation"] > button { margin-inline-start: 0px !important; }
-body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`;
+.skidify-sc-contentArea { overflow: hidden; position: relative; }
+.skidify-sc-scroller { display: flex; align-items: center; overflow-x: auto; scrollbar-width: none; white-space: nowrap; width: 100%; -ms-overflow-style: none; overscroll-behavior-x: contain; will-change: transform; }
+@media (prefers-reduced-motion: no-preference) { .skidify-sc-scroller { scroll-behavior: smooth; } }
+.skidify-sc-scroller::-webkit-scrollbar { display: none; }
+.skidify-sc-scroller.skidify-sc-snap { scroll-snap-type: inline mandatory; }
+.skidify-sc-scroller.skidify-sc-snap .skidify-sc-snapCenter [data-carousel-item] { scroll-snap-align: center; }
+.skidify-sc-scroller.skidify-sc-snap .skidify-sc-snapStart [data-carousel-item] { scroll-snap-align: start; }
+.skidify-sc-scroller.skidify-sc-wheelEnabled { overscroll-behavior: contain; }
+.skidify-sc-scroller.skidify-sc-maskGradient { --sc-start-color: #000; --sc-end-color: #000; -webkit-mask-composite: source-in, xor; mask-composite: intersect; -webkit-mask-image: linear-gradient(90deg, var(--sc-start-color) 0, #000 120px), linear-gradient(90deg, #000 calc(100% - 120px), var(--sc-end-color) 100%); mask-image: linear-gradient(90deg, var(--sc-start-color) 0, #000 120px), linear-gradient(90deg, #000 calc(100% - 120px), var(--sc-end-color) 100%); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+.skidify-sc-scroller.skidify-sc-maskGradient.skidify-sc-maskStart { --sc-start-color: transparent; }
+.skidify-sc-scroller.skidify-sc-maskGradient.skidify-sc-maskEnd { --sc-end-color: transparent; }
+.skidify-sc-linearGradient::before, .skidify-sc-linearGradient::after { bottom: 0; content: ""; height: 100%; opacity: 0; pointer-events: none; position: absolute; top: 0; transition: opacity .15s ease-out; width: 120px; z-index: 2; }
+.skidify-sc-linearGradient::before { background: linear-gradient(90deg, var(--carousel-start-chevron-gradient, var(--spice-main)) 0, transparent 100%); inset-inline-start: 0; }
+.skidify-sc-linearGradient::after { background: linear-gradient(-90deg, var(--carousel-end-chevron-gradient, var(--spice-main)) 0, transparent 100%); inset-inline-end: 0; }
+.skidify-sc-linearGradient.skidify-sc-lgStart::before { opacity: 1; }
+.skidify-sc-linearGradient.skidify-sc-lgEnd::after { opacity: 1; }
+.skidify-sc-carousel { bottom: 0; left: 0; position: absolute; right: 0; top: 0; justify-content: space-between; align-items: center; display: flex; pointer-events: none; }
+.skidify-sc-chevronBtn { display: flex; border: none; border-radius: 50%; cursor: pointer; justify-content: center; align-items: center; backdrop-filter: var(--chevrons-button-backdrop-filter, none); background: transparent; background-color: var(--chevrons-button-color, var(--background-elevated-base)); height: 24px; opacity: 0; position: relative; transition: color .15s ease-out, opacity .15s ease-out, background-color .15s ease-out, translate .15s ease-out; translate: 0; width: 24px; z-index: 3; pointer-events: none; color: var(--text-base, #fff); }
+.skidify-sc-chevronBtn > * { opacity: .7; z-index: 2; }
+.skidify-sc-chevronBtn:hover { background-color: var(--chevrons-button-hover-color, var(--background-elevated-highlight)); }
+.skidify-sc-chevronBtn:hover > * { opacity: 1; }
+.skidify-sc-chevronBtn.skidify-sc-chevronVisible { opacity: 1; pointer-events: auto; }
+.skidify-sc-onHover .skidify-sc-chevronBtn { opacity: 0; }
+.skidify-sc-contentArea:hover .skidify-sc-onHover .skidify-sc-chevronBtn.skidify-sc-chevronVisible { opacity: 1; }
+.skidify-sc-contentArea:hover .skidify-sc-onHover .skidify-sc-chevronStart.skidify-sc-chevronVisible { translate: 8px; }
+.skidify-sc-contentArea:hover .skidify-sc-onHover .skidify-sc-chevronEnd.skidify-sc-chevronVisible { translate: -8px; }
+.skidify-sc-scroller > div[role="presentation"] > button { margin-inline-start: 0px !important; }
+body[data-dragging-uri-type] .skidify-sc-chevronBtn { pointer-events: none; }`;
 			document.head.appendChild(style);
 		}
 
 		function useDragToScroll({ isDisabled = true } = {}) {
-			const { useRef, useCallback } = Spicetify.React;
+			const { useRef, useCallback } = skidify.React;
 			const frameRef = useRef(0);
 			const savedBehavior = useRef(null);
 			const savedSnapType = useRef(null);
@@ -774,7 +774,7 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 		}
 
 		function useWheelScroll(onlyHorizontalWheel) {
-			const { useRef, useCallback } = Spicetify.React;
+			const { useRef, useCallback } = skidify.React;
 			const isFirst = useRef(true);
 			const savedBehavior = useRef(null);
 			const timer = useRef(null);
@@ -802,7 +802,7 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 		}
 
 		function useScrollState(scrollerRef, contentRef) {
-			const { useState, useCallback, useEffect } = Spicetify.React;
+			const { useState, useCallback, useEffect } = skidify.React;
 			const [canGoStart, setCanGoStart] = useState(false);
 			const [canGoEnd, setCanGoEnd] = useState(false);
 
@@ -838,10 +838,10 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 		}
 
 		function ScrollableContainerComponent(props) {
-			const { useRef, useCallback, useMemo } = Spicetify.React;
-			const h = Spicetify.ReactJSX.jsx;
-			const hsf = Spicetify.ReactJSX.jsxs;
-			const cn = Spicetify.classnames;
+			const { useRef, useCallback, useMemo } = skidify.React;
+			const h = skidify.ReactJSX.jsx;
+			const hsf = skidify.ReactJSX.jsxs;
+			const cn = skidify.classnames;
 
 			const {
 				children,
@@ -924,7 +924,7 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 
 			const makeChevron = (svgPath, position, visible, dir) =>
 				h("div", {
-					className: cn("spicetify-sc-chevronBtn", `spicetify-sc-chevron${position}`, { "spicetify-sc-chevronVisible": visible }),
+					className: cn("skidify-sc-chevronBtn", `skidify-sc-chevron${position}`, { "skidify-sc-chevronVisible": visible }),
 					onClick: (e) => {
 						e.preventDefault();
 						e.stopPropagation();
@@ -935,20 +935,20 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 				});
 
 			return hsf("div", {
-				className: cn("spicetify-sc-contentArea", className, {
-					"spicetify-sc-linearGradient": isLinearGradient,
-					"spicetify-sc-lgStart": isLinearGradient && canGoStart,
-					"spicetify-sc-lgEnd": isLinearGradient && canGoEnd,
+				className: cn("skidify-sc-contentArea", className, {
+					"skidify-sc-linearGradient": isLinearGradient,
+					"skidify-sc-lgStart": isLinearGradient && canGoStart,
+					"skidify-sc-lgEnd": isLinearGradient && canGoEnd,
 				}),
 				children: [
 					h("div", {
 						ref: scrollerRef,
-						className: cn("spicetify-sc-scroller", scrollerClassName, {
-							"spicetify-sc-snap": isSnap,
-							"spicetify-sc-maskGradient": isMask,
-							"spicetify-sc-wheelEnabled": wheelScrollEnabled,
-							"spicetify-sc-maskStart": isMask && canGoStart,
-							"spicetify-sc-maskEnd": isMask && canGoEnd,
+						className: cn("skidify-sc-scroller", scrollerClassName, {
+							"skidify-sc-snap": isSnap,
+							"skidify-sc-maskGradient": isMask,
+							"skidify-sc-wheelEnabled": wheelScrollEnabled,
+							"skidify-sc-maskStart": isMask && canGoStart,
+							"skidify-sc-maskEnd": isMask && canGoEnd,
 						}),
 						onScroll: onScroll ? fireScroll : undefined,
 						onMouseDownCapture: dragHandler,
@@ -960,16 +960,16 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 							ref: contentRef,
 							role: "presentation",
 							className: cn(scrollContentClassName, {
-								"spicetify-sc-snapStart": scrollSnapAlign === "start",
-								"spicetify-sc-snapCenter": scrollSnapAlign === "center",
+								"skidify-sc-snapStart": scrollSnapAlign === "start",
+								"skidify-sc-snapCenter": scrollSnapAlign === "center",
 							}),
 							children,
 						}),
 					}),
 					showButtons !== SHOW_BUTTONS.NEVER &&
 						hsf("div", {
-							className: cn("spicetify-sc-carousel", chevronsClassName, {
-								"spicetify-sc-onHover": showButtons === SHOW_BUTTONS.ON_HOVER,
+							className: cn("skidify-sc-carousel", chevronsClassName, {
+								"skidify-sc-onHover": showButtons === SHOW_BUTTONS.ON_HOVER,
 							}),
 							children: [makeChevron(CHEVRON_LEFT, "Start", canGoStart, DIRECTION.START), makeChevron(CHEVRON_RIGHT, "End", canGoEnd, DIRECTION.END)],
 						}),
@@ -985,7 +985,7 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 		return ScrollableContainerComponent;
 	})();
 
-	Object.assign(Spicetify, {
+	Object.assign(skidify, {
 		React: cache.find((m) => m?.useMemo),
 		ReactJSX: cache.find((m) => m?.jsx),
 		ReactDOM: cache.find((m) => m?.createPortal),
@@ -997,21 +997,21 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 			.find((e) => typeof e === "function"),
 		Color: functionModules.find((m) => fnStr(m).includes("static fromHex") || fnStr(m).includes("this.rgb")),
 		Player: {
-			...Spicetify.Player,
+			...skidify.Player,
 			get origin() {
-				return Spicetify.Platform?.PlayerAPI;
+				return skidify.Platform?.PlayerAPI;
 			},
 		},
 		GraphQL: {
-			...Spicetify.GraphQL,
+			...skidify.GraphQL,
 			get Request() {
-				return Spicetify.Platform?.GraphQLLoader || Spicetify.GraphQL.Handler?.(Spicetify.GraphQL.Context);
+				return skidify.Platform?.GraphQLLoader || skidify.GraphQL.Handler?.(skidify.GraphQL.Context);
 			},
 			Context: functionModules.find((m) => fnStr(m).includes("subscription") && fnStr(m).includes("mutation")),
 			Handler: functionModules.find((m) => fnStr(m).includes("GraphQL subscriptions are not supported")),
 		},
 		ReactComponent: {
-			...Spicetify.ReactComponent,
+			...skidify.ReactComponent,
 			TextComponent: modules.find((m) => m?.h1 && m?.render),
 			Menu: functionModules.find((m) => fnStr(m).includes("getInitialFocusElement") && fnStr(m).includes("children")),
 			MenuItem: functionModules.find((m) => fnStr(m).includes("handleMouseEnter") && fnStr(m).includes("onClick")),
@@ -1096,7 +1096,7 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 			),
 		},
 		ReactFlipToolkit: {
-			...Spicetify.ReactFlipToolkit,
+			...skidify.ReactFlipToolkit,
 			Flipper: functionModules.find((m) => m?.prototype?.getSnapshotBeforeUpdate),
 			Flipped: functionModules.find((m) => m.displayName === "Flipped"),
 		},
@@ -1105,11 +1105,11 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 		Locale: modules.find((m) => m?._dictionary),
 	});
 
-	if (!Spicetify.ContextMenuV2._context) Spicetify.ContextMenuV2._context = Spicetify.React.createContext({});
+	if (!skidify.ContextMenuV2._context) skidify.ContextMenuV2._context = skidify.React.createContext({});
 
 	(function waitForChunks() {
 		const listOfComponents = ["Slider", "Dropdown", "Toggle", "Cards.Artist", "Cards.Audiobook", "Cards.Profile", "Cards.Show", "Cards.Track"];
-		if (listOfComponents.every((component) => component.split(".").reduce((o, k) => o?.[k], Spicetify.ReactComponent) !== undefined)) return;
+		if (listOfComponents.every((component) => component.split(".").reduce((o, k) => o?.[k], skidify.ReactComponent) !== undefined)) return;
 		const currentChunks = Object.entries(require.m);
 
 		const cache = Object.keys(require.m).map((id) => require(id));
@@ -1153,15 +1153,15 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 				})
 				.filter(Boolean),
 		];
-		Object.assign(Spicetify.ReactComponent.Cards, Object.fromEntries(lazyCards));
+		Object.assign(skidify.ReactComponent.Cards, Object.fromEntries(lazyCards));
 
-		Spicetify.ReactComponent.Slider = wrapProvider(functionModules.find((m) => fnStr(m).includes("progressBarRef")));
-		Spicetify.ReactComponent.Toggle = functionModules.find((m) => fnStr(m).includes("onSelected") && fnStr(m).includes('type:"checkbox"'));
+		skidify.ReactComponent.Slider = wrapProvider(functionModules.find((m) => fnStr(m).includes("progressBarRef")));
+		skidify.ReactComponent.Toggle = functionModules.find((m) => fnStr(m).includes("onSelected") && fnStr(m).includes('type:"checkbox"'));
 
 		// chunks
 		const dropdownChunk = currentChunks.find(([, value]) => fnStr(value).includes("dropdown-list") && fnStr(value).includes('"listbox"'));
 		if (dropdownChunk) {
-			Spicetify.ReactComponent.Dropdown =
+			skidify.ReactComponent.Dropdown =
 				Object.values(require(dropdownChunk[0])).find(
 					(m) => m?.$$typeof === Symbol.for("react.forward_ref") && fnStr(m.render).includes("dropdown-list")
 				) ??
@@ -1170,27 +1170,27 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 		}
 
 		const toggleChunk = currentChunks.find(([, value]) => fnStr(value).includes("onSelected") && fnStr(value).includes('type:"checkbox"'));
-		if (toggleChunk && !Spicetify.ReactComponent.Toggle) {
-			Spicetify.ReactComponent.Toggle = Object.values(require(toggleChunk[0]))[0].render;
+		if (toggleChunk && !skidify.ReactComponent.Toggle) {
+			skidify.ReactComponent.Toggle = Object.values(require(toggleChunk[0]))[0].render;
 		}
 
-		if (!listOfComponents.every((component) => component.split(".").reduce((o, k) => o?.[k], Spicetify.ReactComponent) !== undefined)) {
+		if (!listOfComponents.every((component) => component.split(".").reduce((o, k) => o?.[k], skidify.ReactComponent) !== undefined)) {
 			setTimeout(waitForChunks, 100);
 			return;
 		}
 
-		if (Spicetify.ReactComponent.ScrollableContainer) setTimeout(refreshNavLinks, 100);
+		if (skidify.ReactComponent.ScrollableContainer) setTimeout(refreshNavLinks, 100);
 	})();
 
 	(function waitForSnackbar() {
-		if (!Object.keys(Spicetify.Snackbar).length) {
+		if (!Object.keys(skidify.Snackbar).length) {
 			setTimeout(waitForSnackbar, 100);
 			return;
 		}
 		// Snackbar notifications
 		// https://github.com/iamhosseindhv/notistack
-		Spicetify.Snackbar = {
-			...Spicetify.Snackbar,
+		skidify.Snackbar = {
+			...skidify.Snackbar,
 			SnackbarProvider: functionModules.find((m) => fnStr(m).includes("enqueueSnackbar called with invalid argument")),
 			useSnackbar: functionModules.find((m) => fnStr(m).match(/^function\(\)\{return\(0,[\w$]+\.useContext\)\([\w$]+\)\}$/)),
 		};
@@ -1199,7 +1199,7 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 	const localeModule = modules.find((m) => m?.getTranslations);
 	if (localeModule) {
 		const createUrlLocale = functionModules.find((m) => fnStr(m).includes("has") && fnStr(m).includes("baseName") && fnStr(m).includes("language"));
-		Spicetify.Locale = {
+		skidify.Locale = {
 			get _relativeTimeFormat() {
 				return localeModule._relativeTimeFormat;
 			},
@@ -1249,11 +1249,11 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 		};
 	}
 
-	if (Spicetify.Locale) Spicetify.Locale._supportedLocales = cache.find((m) => typeof m?.ja === "string");
+	if (skidify.Locale) skidify.Locale._supportedLocales = cache.find((m) => typeof m?.ja === "string");
 
-	Object.defineProperty(Spicetify, "Queue", {
+	Object.defineProperty(skidify, "Queue", {
 		get() {
-			return Spicetify.Player.origin?._queue?._state ?? Spicetify.Player.origin?._queue?._queue;
+			return skidify.Player.origin?._queue?._state ?? skidify.Player.origin?._queue?._queue;
 		},
 	});
 
@@ -1262,24 +1262,24 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 			value.toString().includes("main-confirmDialog-container") ||
 			(value.toString().includes("confirmDialog") && value.toString().includes("shouldCloseOnEsc") && value.toString().includes("isOpen"))
 	);
-	if (!Spicetify.ReactComponent?.ConfirmDialog && confirmDialogChunk) {
-		Spicetify.ReactComponent.ConfirmDialog = Object.values(require(confirmDialogChunk[0])).find((m) => typeof m === "object");
+	if (!skidify.ReactComponent?.ConfirmDialog && confirmDialogChunk) {
+		skidify.ReactComponent.ConfirmDialog = Object.values(require(confirmDialogChunk[0])).find((m) => typeof m === "object");
 	} else {
-		Spicetify.ReactComponent.ConfirmDialog = functionModules.find(
+		skidify.ReactComponent.ConfirmDialog = functionModules.find(
 			(m) => fnStr(m).includes("isOpen") && fnStr(m).includes("shouldCloseOnEsc") && fnStr(m).includes("onClose")
 		);
 	}
 
 	const contextMenuChunk = chunks.find(([, value]) => value.toString().includes("handleContextMenu"));
 	if (contextMenuChunk) {
-		Spicetify.ReactComponent.ContextMenu = Object.values(require(contextMenuChunk[0])).find((m) => typeof m === "function");
+		skidify.ReactComponent.ContextMenu = Object.values(require(contextMenuChunk[0])).find((m) => typeof m === "function");
 	}
 
 	const playlistMenuChunk = chunks.find(
 		([, value]) => value.toString().includes('value:"playlist"') && value.toString().includes("canView") && value.toString().includes("permissions")
 	);
-	if (playlistMenuChunk && !Spicetify.ReactComponent?.PlaylistMenu) {
-		Spicetify.ReactComponent.PlaylistMenu = Object.values(require(playlistMenuChunk[0])).find(
+	if (playlistMenuChunk && !skidify.ReactComponent?.PlaylistMenu) {
+		skidify.ReactComponent.PlaylistMenu = Object.values(require(playlistMenuChunk[0])).find(
 			(m) => typeof m === "function" || typeof m === "object"
 		);
 	}
@@ -1288,21 +1288,21 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 		([_, value]) => value.toString().includes("fetchPreviousPage") && value.toString().includes("getOptimisticResult")
 	);
 	if (infiniteQueryChunk) {
-		Spicetify.ReactQuery.useInfiniteQuery = Object.values(require(infiniteQueryChunk[0])).find((m) => typeof m === "function");
+		skidify.ReactQuery.useInfiniteQuery = Object.values(require(infiniteQueryChunk[0])).find((m) => typeof m === "function");
 	}
 
-	if (Spicetify.Color) Spicetify.Color.CSSFormat = modules.find((m) => m?.RGBA);
+	if (skidify.Color) skidify.Color.CSSFormat = modules.find((m) => m?.RGBA);
 
 	// Combine snackbar and notification
 	(function bindShowNotification() {
-		if (!Spicetify.Snackbar?.enqueueSnackbar && !Spicetify.showNotification) {
+		if (!skidify.Snackbar?.enqueueSnackbar && !skidify.showNotification) {
 			setTimeout(bindShowNotification, 250);
 			return;
 		}
 
-		if (Spicetify.Snackbar?.enqueueSnackbar) {
-			Spicetify.showNotification = (message, isError, msTimeout) => {
-				Spicetify.Snackbar.enqueueSnackbar(message, {
+		if (skidify.Snackbar?.enqueueSnackbar) {
+			skidify.showNotification = (message, isError, msTimeout) => {
+				skidify.Snackbar.enqueueSnackbar(message, {
 					variant: isError ? "error" : "default",
 					autoHideDuration: msTimeout,
 				});
@@ -1311,15 +1311,15 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 			return;
 		}
 
-		Spicetify.Snackbar.enqueueSnackbar = (message, { variant = "default", autoHideDuration } = {}) => {
+		skidify.Snackbar.enqueueSnackbar = (message, { variant = "default", autoHideDuration } = {}) => {
 			isError = variant === "error";
-			Spicetify.showNotification(message, isError, autoHideDuration);
+			skidify.showNotification(message, isError, autoHideDuration);
 		};
 	})();
 
 	// Image color extractor
 	(async function bindColorExtractor() {
-		if (!Spicetify.GraphQL.Request) {
+		if (!skidify.GraphQL.Request) {
 			setTimeout(bindColorExtractor, 10);
 			return;
 		}
@@ -1328,8 +1328,8 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 		);
 		const fallbackPreset = modules.find((m) => m?.colorDark);
 
-		Spicetify.extractColorPreset = async (image) => {
-			const analysis = await imageAnalysis(Spicetify.GraphQL.Request, image);
+		skidify.extractColorPreset = async (image) => {
+			const analysis = await imageAnalysis(skidify.GraphQL.Request, image);
 			for (const result of analysis) {
 				if ("isFallback" in result === false) result.isFallback = fallbackPreset === result;
 			}
@@ -1341,21 +1341,21 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 	function wrapProvider(component) {
 		if (!component) return null;
 		return (props) =>
-			Spicetify.React.createElement(
-				Spicetify.ReactComponent.RemoteConfigProvider,
-				{ configuration: Spicetify.Platform.RemoteConfiguration },
-				Spicetify.React.createElement(component, props)
+			skidify.React.createElement(
+				skidify.ReactComponent.RemoteConfigProvider,
+				{ configuration: skidify.Platform.RemoteConfiguration },
+				skidify.React.createElement(component, props)
 			);
 	}
 
 	(function waitForURI() {
-		if (!Spicetify.URI) {
+		if (!skidify.URI) {
 			setTimeout(waitForURI, 10);
 			return;
 		}
 
 		// Ignore on versions older than 1.2.4
-		if (Spicetify.URI.Type) return;
+		if (skidify.URI.Type) return;
 
 		const URIChunk = cache
 			.filter((module) => typeof module === "object")
@@ -1371,15 +1371,15 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 		const URIModules = Object.values(URIChunk);
 
 		// URI.Type
-		Spicetify.URI.Type = URIModules.find((m) => m?.PLAYLIST_V2);
+		skidify.URI.Type = URIModules.find((m) => m?.PLAYLIST_V2);
 
 		// Parse functions
-		Spicetify.URI.from = URIModules.find((m) => typeof m === "function" && m.toString().includes("allowedTypes"));
-		Spicetify.URI.fromString = URIModules.find((m) => typeof m === "function" && m.toString().includes("Argument `uri`"));
+		skidify.URI.from = URIModules.find((m) => typeof m === "function" && m.toString().includes("allowedTypes"));
+		skidify.URI.fromString = URIModules.find((m) => typeof m === "function" && m.toString().includes("Argument `uri`"));
 
 		// createURI functions
 		const createURIFunctions = URIModules.filter((m) => typeof m === "function" && m.toString().match(/\([\w$]+\./));
-		for (const type of Object.keys(Spicetify.URI.Type)) {
+		for (const type of Object.keys(skidify.URI.Type)) {
 			const func = createURIFunctions.find((m) => m.toString().match(new RegExp(`\\([\\w$]+\\.${type}(?!_)`)));
 			if (!func) continue;
 
@@ -1391,12 +1391,12 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 					return word[0].toUpperCase() + word.slice(1);
 				})
 				.join("");
-			Spicetify.URI[`${camelCaseType}URI`] = func;
+			skidify.URI[`${camelCaseType}URI`] = func;
 		}
 
 		// isURI functions
 		const isURIFUnctions = URIModules.filter((m) => typeof m === "function" && m.toString().match(/=[\w$]+\./));
-		for (const type of Object.keys(Spicetify.URI.Type)) {
+		for (const type of Object.keys(skidify.URI.Type)) {
 			const func = isURIFUnctions.find((m) => m.toString().match(new RegExp(`===[\\w$]+\\.${type}(?!_)\\}`)));
 			const camelCaseType = type
 				.toLowerCase()
@@ -1405,35 +1405,35 @@ body[data-dragging-uri-type] .spicetify-sc-chevronBtn { pointer-events: none; }`
 				.join("");
 
 			// Fill in missing functions, only serves as placebo as they cannot be as accurate as the original functions
-			Spicetify.URI[`is${camelCaseType}`] =
+			skidify.URI[`is${camelCaseType}`] =
 				func ??
 				((uri) => {
 					let uriObj;
 					try {
-						uriObj = Spicetify.URI.from?.(uri) ?? Spicetify.URI.fromString?.(uri);
+						uriObj = skidify.URI.from?.(uri) ?? skidify.URI.fromString?.(uri);
 					} catch {
 						return false;
 					}
 					if (!uriObj) return false;
-					return uriObj.type === Spicetify.URI.Type[type];
+					return uriObj.type === skidify.URI.Type[type];
 				});
 		}
 
-		Spicetify.URI.isPlaylistV1OrV2 = (uri) => Spicetify.URI.isPlaylist(uri) || Spicetify.URI.isPlaylistV2(uri);
+		skidify.URI.isPlaylistV1OrV2 = (uri) => skidify.URI.isPlaylist(uri) || skidify.URI.isPlaylistV2(uri);
 
 		// Conversion functions
-		Spicetify.URI.idToHex = URIModules.find((m) => typeof m === "function" && m.toString().includes("22==="));
-		Spicetify.URI.hexToId = URIModules.find((m) => typeof m === "function" && m.toString().includes("32==="));
+		skidify.URI.idToHex = URIModules.find((m) => typeof m === "function" && m.toString().includes("22==="));
+		skidify.URI.hexToId = URIModules.find((m) => typeof m === "function" && m.toString().includes("32==="));
 
 		// isSameIdentity
-		Spicetify.URI.isSameIdentity = URIModules.find((m) => typeof m === "function" && m.toString().match(/[\w$]+\.id===[\w$]+\.id/));
+		skidify.URI.isSameIdentity = URIModules.find((m) => typeof m === "function" && m.toString().match(/[\w$]+\.id===[\w$]+\.id/));
 	})();
 
-	Spicetify.Events.webpackLoaded.fire();
+	skidify.Events.webpackLoaded.fire();
 	refreshNavLinks?.();
 })();
 
-Spicetify.Events = (() => {
+skidify.Events = (() => {
 	class Event {
 		callbacks = [];
 		on(callback) {
@@ -1449,9 +1449,9 @@ Spicetify.Events = (() => {
 	return { webpackLoaded: new Event(), platformLoaded: new Event() };
 })();
 
-// Wait for Spicetify.Player.origin._state before adding following APIs
+// Wait for skidify.Player.origin._state before adding following APIs
 (function waitOrigins() {
-	if (!Spicetify?.Player?.origin?._state) {
+	if (!skidify?.Player?.origin?._state) {
 		setTimeout(waitOrigins, 10);
 		return;
 	}
@@ -1462,59 +1462,59 @@ Spicetify.Events = (() => {
 	};
 
 	const interval = setInterval(() => {
-		if (!Spicetify.Player.origin._state?.item) return;
-		Spicetify.Player.data = Spicetify.Player.origin._state;
-		playerState.cache = Spicetify.Player.data;
+		if (!skidify.Player.origin._state?.item) return;
+		skidify.Player.data = skidify.Player.origin._state;
+		playerState.cache = skidify.Player.data;
 		clearInterval(interval);
 	}, 10);
 
-	Spicetify.Player.origin._events.addListener("update", ({ data: playerEventData }) => {
+	skidify.Player.origin._events.addListener("update", ({ data: playerEventData }) => {
 		playerState.current = playerEventData.item ? playerEventData : null;
-		Spicetify.Player.data = playerState.current;
+		skidify.Player.data = playerState.current;
 
 		if (playerState.cache?.item?.uri !== playerState.current?.item?.uri) {
 			const event = new Event("songchange");
-			event.data = Spicetify.Player.data;
-			Spicetify.Player.dispatchEvent(event);
+			event.data = skidify.Player.data;
+			skidify.Player.dispatchEvent(event);
 		}
 
 		if (playerState.cache?.isPaused !== playerState.current?.isPaused) {
 			const event = new Event("onplaypause");
-			event.data = Spicetify.Player.data;
-			Spicetify.Player.dispatchEvent(event);
+			event.data = skidify.Player.data;
+			skidify.Player.dispatchEvent(event);
 		}
 
 		playerState.cache = playerState.current;
 	});
 
 	(function waitProductStateAPI() {
-		if (!Spicetify.Platform?.UserAPI) {
+		if (!skidify.Platform?.UserAPI) {
 			setTimeout(waitProductStateAPI, 100);
 			return;
 		}
 
-		const productState = Spicetify.Platform.UserAPI._product_state || Spicetify.Platform.UserAPI._product_state_service;
+		const productState = skidify.Platform.UserAPI._product_state || skidify.Platform.UserAPI._product_state_service;
 		if (productState) return;
-		if (!Spicetify.Platform?.ProductStateAPI) {
+		if (!skidify.Platform?.ProductStateAPI) {
 			setTimeout(waitProductStateAPI, 100);
 			return;
 		}
 
-		const productStateApi = Spicetify.Platform.ProductStateAPI.productStateApi;
-		Spicetify.Platform.UserAPI._product_state_service = productStateApi;
+		const productStateApi = skidify.Platform.ProductStateAPI.productStateApi;
+		skidify.Platform.UserAPI._product_state_service = productStateApi;
 	})();
 
 	(async function setButtonsHeight() {
-		while (!Spicetify.CosmosAsync) {
+		while (!skidify.CosmosAsync) {
 			await new Promise((res) => setTimeout(res, 100));
 		}
-		const expFeatures = JSON.parse(localStorage.getItem("spicetify-exp-features") || "{}");
+		const expFeatures = JSON.parse(localStorage.getItem("skidify-exp-features") || "{}");
 		const isGlobalNavbar = expFeatures?.enableGlobalNavBar?.value;
 
 		if (typeof isGlobalNavbar !== "undefined" && isGlobalNavbar === "control") {
-			await Spicetify.CosmosAsync.post("sp://messages/v1/container/control", {
+			await skidify.CosmosAsync.post("sp://messages/v1/container/control", {
 				type: "update_titlebar",
-				height: Spicetify.Platform.PlatformData.os_name === "osx" ? "42" : "40",
+				height: skidify.Platform.PlatformData.os_name === "osx" ? "42" : "40",
 			});
 		}
 	})();
@@ -1522,33 +1522,33 @@ Spicetify.Events = (() => {
 	setInterval(() => {
 		if (playerState.cache?.isPaused === false) {
 			const event = new Event("onprogress");
-			event.data = Spicetify.Player.getProgress();
-			Spicetify.Player.dispatchEvent(event);
+			event.data = skidify.Player.getProgress();
+			skidify.Player.dispatchEvent(event);
 		}
 	}, 100);
 
-	Spicetify.addToQueue = (uri) => {
-		return Spicetify.Player.origin._queue.addToQueue(uri);
+	skidify.addToQueue = (uri) => {
+		return skidify.Player.origin._queue.addToQueue(uri);
 	};
-	Spicetify.removeFromQueue = (uri) => {
-		return Spicetify.Player.origin._queue.removeFromQueue(uri);
+	skidify.removeFromQueue = (uri) => {
+		return skidify.Player.origin._queue.removeFromQueue(uri);
 	};
 })();
 
-Spicetify.getAudioData = async (uri) => {
-	const providedURI = uri || Spicetify.Player.data.item.uri;
-	const uriObj = Spicetify.URI.from?.(providedURI) ?? Spicetify.URI.fromString?.(providedURI);
-	if (!uriObj || (uriObj.Type || uriObj.type) !== Spicetify.URI.Type.TRACK) {
+skidify.getAudioData = async (uri) => {
+	const providedURI = uri || skidify.Player.data.item.uri;
+	const uriObj = skidify.URI.from?.(providedURI) ?? skidify.URI.fromString?.(providedURI);
+	if (!uriObj || (uriObj.Type || uriObj.type) !== skidify.URI.Type.TRACK) {
 		throw "URI is invalid.";
 	}
 
-	return await Spicetify.CosmosAsync.get(
+	return await skidify.CosmosAsync.get(
 		`https://spclient.wg.spotify.com/audio-attributes/v1/audio-analysis/${uriObj.getBase62Id?.() ?? uriObj.id}?format=json`
 	);
 };
 
-Spicetify.colorExtractor = async (uri) => {
-	const body = await Spicetify.CosmosAsync.get(`https://spclient.wg.spotify.com/colorextractor/v1/extract-presets?uri=${uri}&format=json`);
+skidify.colorExtractor = async (uri) => {
+	const body = await skidify.CosmosAsync.get(`https://spclient.wg.spotify.com/colorextractor/v1/extract-presets?uri=${uri}&format=json`);
 
 	if (body.entries?.length) {
 		const list = {};
@@ -1560,14 +1560,14 @@ Spicetify.colorExtractor = async (uri) => {
 	return null;
 };
 
-Spicetify.LocalStorage = {
+skidify.LocalStorage = {
 	clear: () => localStorage.clear(),
 	get: (key) => localStorage.getItem(key),
 	remove: (key) => localStorage.removeItem(key),
 	set: (key, value) => localStorage.setItem(key, value),
 };
 
-Spicetify._getStyledClassName = (args, component) => {
+skidify._getStyledClassName = (args, component) => {
 	const includedKeys = [
 		"role",
 		"variant",
@@ -1644,7 +1644,7 @@ Spicetify._getStyledClassName = (args, component) => {
 };
 
 (function waitMouseTrap() {
-	if (!Spicetify.Mousetrap) {
+	if (!skidify.Mousetrap) {
 		setTimeout(waitMouseTrap, 10);
 		return;
 	}
@@ -1761,7 +1761,7 @@ Spicetify._getStyledClassName = (args, component) => {
 		let keystroke = "";
 		if (typeof keys === "object") {
 			if (!keys.key || !Object.values(KEYS).includes(keys.key)) {
-				throw `Spicetify.Keyboard.registerShortcut: Invalid key ${keys.key}`;
+				throw `skidify.Keyboard.registerShortcut: Invalid key ${keys.key}`;
 			}
 			if (keys.ctrl) keystroke += "mod+";
 			if (keys.meta) keystroke += "meta+";
@@ -1771,35 +1771,35 @@ Spicetify._getStyledClassName = (args, component) => {
 		} else if (typeof keys === "string" && Object.values(KEYS).includes(keys)) {
 			keystroke = keys;
 		} else {
-			throw `Spicetify.Keyboard.registerShortcut: Invalid keys ${keys}`;
+			throw `skidify.Keyboard.registerShortcut: Invalid keys ${keys}`;
 		}
 		return keystroke;
 	}
 
-	Spicetify.Keyboard = {
+	skidify.Keyboard = {
 		KEYS,
 		registerShortcut: (keys, callback) => {
-			Spicetify.Mousetrap.bind(formatKeys(keys), callback);
+			skidify.Mousetrap.bind(formatKeys(keys), callback);
 		},
 		_deregisterShortcut: (keys) => {
-			Spicetify.Mousetrap.unbind(formatKeys(keys));
+			skidify.Mousetrap.unbind(formatKeys(keys));
 		},
 		changeShortcut: (keys, newKeys) => {
-			if (!keys || !newKeys) throw "Spicetify.Keyboard.changeShortcut: Invalid keys";
+			if (!keys || !newKeys) throw "skidify.Keyboard.changeShortcut: Invalid keys";
 
-			const callback = Object.keys(Spicetify.Mousetrap.trigger()._directMap).find((key) => key.startsWith(formatKeys(keys)));
-			if (!callback) throw "Spicetify.Keyboard.changeShortcut: Shortcut not found";
+			const callback = Object.keys(skidify.Mousetrap.trigger()._directMap).find((key) => key.startsWith(formatKeys(keys)));
+			if (!callback) throw "skidify.Keyboard.changeShortcut: Shortcut not found";
 
-			Spicetify.Keyboard.registerShortcut(newKeys, Spicetify.Mousetrap.trigger()._directMap[callback]);
-			Spicetify.Keyboard._deregisterShortcut(keys);
+			skidify.Keyboard.registerShortcut(newKeys, skidify.Mousetrap.trigger()._directMap[callback]);
+			skidify.Keyboard._deregisterShortcut(keys);
 		},
 	};
-	Spicetify.Keyboard.registerIsolatedShortcut = Spicetify.Keyboard.registerShortcut;
-	Spicetify.Keyboard.registerImportantShortcut = Spicetify.Keyboard.registerShortcut;
-	Spicetify.Keyboard.deregisterImportantShortcut = Spicetify.Keyboard._deregisterShortcut;
+	skidify.Keyboard.registerIsolatedShortcut = skidify.Keyboard.registerShortcut;
+	skidify.Keyboard.registerImportantShortcut = skidify.Keyboard.registerShortcut;
+	skidify.Keyboard.deregisterImportantShortcut = skidify.Keyboard._deregisterShortcut;
 })();
 
-Spicetify.SVGIcons = {
+skidify.SVGIcons = {
 	collaborative:
 		'<path d="M4.765 1.423c-.42.459-.713.992-.903 1.554-.144.421-.264 1.173-.22 1.894.077 1.321.638 2.408 1.399 3.316v.002l.083.098c.611.293 1.16.696 1.621 1.183a2.244 2.244 0 00-.426-2.092l-.127-.153-.002-.001c-.612-.73-.997-1.52-1.051-2.442-.032-.54.066-1.097.143-1.323a2.85 2.85 0 01.589-1.022 2.888 2.888 0 014.258 0c.261.284.456.628.59 1.022.076.226.175.783.143 1.323-.055.921-.44 1.712-1.052 2.442l-.002.001-.127.153a2.25 2.25 0 00.603 3.39l2.209 1.275a3.248 3.248 0 011.605 2.457h-5.99a5.466 5.466 0 01-.594 1.5h8.259l-.184-1.665a4.75 4.75 0 00-2.346-3.591l-2.209-1.275a.75.75 0 01-.201-1.13l.126-.152h.001c.76-.909 1.32-1.995 1.399-3.316.043-.721-.077-1.473-.22-1.894a4.46 4.46 0 00-.644-1.24v-.002h-.002a4.388 4.388 0 00-6.728-.312zM2 12.5v-2h1.5v2h2V14h-2v2H2v-2H0v-1.5h2z"/>',
 	album:
@@ -1976,7 +1976,7 @@ Spicetify.SVGIcons = {
 };
 
 (async function waitUserAPI() {
-	if (!Spicetify.Platform?.UserAPI) {
+	if (!skidify.Platform?.UserAPI) {
 		setTimeout(waitUserAPI, 1000);
 		return;
 	}
@@ -1985,11 +1985,11 @@ Spicetify.SVGIcons = {
 
 	// product_state was renamed to product_state_service in Spotify 1.2.21
 	const productState =
-		Spicetify.Platform.UserAPI?._product_state ||
-		Spicetify.Platform.UserAPI?._product_state_service ||
-		Spicetify.Platform?.ProductStateAPI.productStateApi;
+		skidify.Platform.UserAPI?._product_state ||
+		skidify.Platform.UserAPI?._product_state_service ||
+		skidify.Platform?.ProductStateAPI.productStateApi;
 
-	Spicetify.AppTitle = {
+	skidify.AppTitle = {
 		set: async (name) => {
 			if (subRequest) subRequest.cancel();
 			await productState.putOverridesValues({ pairs: { name } });
@@ -2017,15 +2017,15 @@ Spicetify.SVGIcons = {
 })();
 
 function parseIcon(icon, size = 16) {
-	if (icon && Spicetify.SVGIcons[icon]) {
-		return `<svg height="${size}" width="${size}" viewBox="0 0 ${size} ${size}" fill="currentColor">${Spicetify.SVGIcons[icon]}</svg>`;
+	if (icon && skidify.SVGIcons[icon]) {
+		return `<svg height="${size}" width="${size}" viewBox="0 0 ${size} ${size}" fill="currentColor">${skidify.SVGIcons[icon]}</svg>`;
 	}
 	return icon || "";
 }
 
 function createIconComponent(icon, size = 16) {
-	return Spicetify.React.createElement(
-		Spicetify.ReactComponent.IconComponent,
+	return skidify.React.createElement(
+		skidify.ReactComponent.IconComponent,
 		{
 			iconSize: size,
 			dangerouslySetInnerHTML: {
@@ -2036,7 +2036,7 @@ function createIconComponent(icon, size = 16) {
 	);
 }
 
-Spicetify.ContextMenuV2 = (() => {
+skidify.ContextMenuV2 = (() => {
 	const registeredItems = new Map();
 
 	function parseProps(props) {
@@ -2066,14 +2066,14 @@ Spicetify.ContextMenuV2 = (() => {
 			this._trailingIcon = trailingIcon;
 			this._divider = divider;
 
-			this._element = Spicetify.ReactJSX.jsx(() => {
-				const [_children, setChildren] = Spicetify.React.useState(this._children);
-				const [_disabled, setDisabled] = Spicetify.React.useState(this._disabled);
-				const [_leadingIcon, setLeadingIcon] = Spicetify.React.useState(this._leadingIcon);
-				const [_trailingIcon, setTrailingIcon] = Spicetify.React.useState(this._trailingIcon);
-				const [_divider, setDivider] = Spicetify.React.useState(this._divider);
+			this._element = skidify.ReactJSX.jsx(() => {
+				const [_children, setChildren] = skidify.React.useState(this._children);
+				const [_disabled, setDisabled] = skidify.React.useState(this._disabled);
+				const [_leadingIcon, setLeadingIcon] = skidify.React.useState(this._leadingIcon);
+				const [_trailingIcon, setTrailingIcon] = skidify.React.useState(this._trailingIcon);
+				const [_divider, setDivider] = skidify.React.useState(this._divider);
 
-				Spicetify.React.useEffect(() => {
+				skidify.React.useEffect(() => {
 					this._setChildren = setChildren;
 					this._setDisabled = setDisabled;
 					this._setIcon = setLeadingIcon;
@@ -2089,9 +2089,9 @@ Spicetify.ContextMenuV2 = (() => {
 					};
 				});
 
-				const context = Spicetify.React.useContext(Spicetify.ContextMenuV2._context) ?? {};
+				const context = skidify.React.useContext(skidify.ContextMenuV2._context) ?? {};
 
-				return Spicetify.React.createElement(Spicetify.ReactComponent.MenuItem, {
+				return skidify.React.createElement(skidify.ReactComponent.MenuItem, {
 					disabled: _disabled,
 					divider: _divider,
 					onClick: (e) => {
@@ -2145,10 +2145,10 @@ Spicetify.ContextMenuV2 = (() => {
 		}
 
 		register() {
-			Spicetify.ContextMenuV2.registerItem(this._element, this.shouldAdd);
+			skidify.ContextMenuV2.registerItem(this._element, this.shouldAdd);
 		}
 		deregister() {
-			Spicetify.ContextMenuV2.unregisterItem(this._element);
+			skidify.ContextMenuV2.unregisterItem(this._element);
 		}
 	}
 
@@ -2171,15 +2171,15 @@ Spicetify.ContextMenuV2 = (() => {
 			this._divider = divider;
 			this._items = items;
 			this._depth = depth;
-			this._element = Spicetify.ReactJSX.jsx(() => {
-				const [_text, setText] = Spicetify.React.useState(this._text);
-				const [_disabled, setDisabled] = Spicetify.React.useState(this._disabled);
-				const [_leadingIcon, setLeadingIcon] = Spicetify.React.useState(this._leadingIcon);
-				const [_divider, setDivider] = Spicetify.React.useState(this._divider);
-				const [_items, setItems] = Spicetify.React.useState(this._items);
-				const [_depth, setDepth] = Spicetify.React.useState(this._depth);
+			this._element = skidify.ReactJSX.jsx(() => {
+				const [_text, setText] = skidify.React.useState(this._text);
+				const [_disabled, setDisabled] = skidify.React.useState(this._disabled);
+				const [_leadingIcon, setLeadingIcon] = skidify.React.useState(this._leadingIcon);
+				const [_divider, setDivider] = skidify.React.useState(this._divider);
+				const [_items, setItems] = skidify.React.useState(this._items);
+				const [_depth, setDepth] = skidify.React.useState(this._depth);
 
-				Spicetify.React.useEffect(() => {
+				skidify.React.useEffect(() => {
 					this._setText = setText;
 					this._setDisabled = setDisabled;
 					this._setLeadingIcon = setLeadingIcon;
@@ -2196,10 +2196,10 @@ Spicetify.ContextMenuV2 = (() => {
 					};
 				});
 
-				const context = Spicetify.React.useContext(Spicetify.ContextMenuV2._context) ?? {};
+				const context = skidify.React.useContext(skidify.ContextMenuV2._context) ?? {};
 				const { props, trigger, target } = context;
 
-				return Spicetify.React.createElement(Spicetify.ReactComponent.MenuSubMenuItem, {
+				return skidify.React.createElement(skidify.ReactComponent.MenuSubMenuItem, {
 					displayText: _text,
 					divider: _divider,
 					depth: _depth,
@@ -2279,7 +2279,7 @@ Spicetify.ContextMenuV2 = (() => {
 	}
 
 	const renderItems = () => {
-		const { props, trigger, target } = Spicetify.React.useContext(Spicetify.ContextMenuV2._context) ?? {};
+		const { props, trigger, target } = skidify.React.useContext(skidify.ContextMenuV2._context) ?? {};
 
 		return Array.from(registeredItems.entries())
 			.map(([item, shouldAdd]) => shouldAdd?.(props, trigger, target) && item)
@@ -2289,11 +2289,11 @@ Spicetify.ContextMenuV2 = (() => {
 	return { parseProps, Item, ItemSubMenu, registerItem, unregisterItem, renderItems };
 })();
 
-Spicetify.Menu = (() => {
+skidify.Menu = (() => {
 	const shouldAdd = (_, trigger, target) =>
 		trigger === "click" && (target.classList.contains("main-userWidget-boxCondensed") || target.classList.contains("main-userWidget-box"));
 
-	class Item extends Spicetify.ContextMenuV2.Item {
+	class Item extends skidify.ContextMenuV2.Item {
 		constructor(children, isEnabled, onClick, leadingIcon) {
 			super({ children, leadingIcon, onClick: (_, self) => onClick(self), shouldAdd });
 
@@ -2313,7 +2313,7 @@ Spicetify.Menu = (() => {
 		}
 	}
 
-	class SubMenu extends Spicetify.ContextMenuV2.ItemSubMenu {
+	class SubMenu extends skidify.ContextMenuV2.ItemSubMenu {
 		constructor(text, items, leadingIcon) {
 			super({ text, leadingIcon, items, shouldAdd });
 		}
@@ -2336,10 +2336,10 @@ Spicetify.Menu = (() => {
 	return { Item, SubMenu };
 })();
 
-Spicetify.ContextMenu = (() => {
-	const iconList = Object.keys(Spicetify.SVGIcons);
+skidify.ContextMenu = (() => {
+	const iconList = Object.keys(skidify.SVGIcons);
 
-	class Item extends Spicetify.ContextMenuV2.Item {
+	class Item extends skidify.ContextMenuV2.Item {
 		static iconList = iconList;
 
 		constructor(name, onClick, shouldAdd = () => true, icon = undefined, trailingIcon = undefined, disabled = false) {
@@ -2349,11 +2349,11 @@ Spicetify.ContextMenu = (() => {
 				leadingIcon: icon,
 				trailingIcon,
 				onClick: (context) => {
-					const [uris, uids, contextUri] = Spicetify.ContextMenuV2.parseProps(context.props);
+					const [uris, uids, contextUri] = skidify.ContextMenuV2.parseProps(context.props);
 					onClick(uris, uids, contextUri);
 				},
 				shouldAdd: (props) => {
-					const parsedProps = Spicetify.ContextMenuV2.parseProps(props);
+					const parsedProps = skidify.ContextMenuV2.parseProps(props);
 					return parsedProps && shouldAdd(...parsedProps);
 				},
 			});
@@ -2374,7 +2374,7 @@ Spicetify.ContextMenu = (() => {
 		}
 	}
 
-	class SubMenu extends Spicetify.ContextMenuV2.ItemSubMenu {
+	class SubMenu extends skidify.ContextMenuV2.ItemSubMenu {
 		static iconList = iconList;
 
 		constructor(name, items, shouldAdd, disabled = false, icon = undefined) {
@@ -2384,7 +2384,7 @@ Spicetify.ContextMenu = (() => {
 				leadingIcon: icon,
 				items,
 				shouldAdd: (props) => {
-					const parsedProps = Spicetify.ContextMenuV2.parseProps(props);
+					const parsedProps = skidify.ContextMenuV2.parseProps(props);
 					return parsedProps && shouldAdd(...parsedProps);
 				},
 			});
@@ -2404,30 +2404,30 @@ Spicetify.ContextMenu = (() => {
 let navLinkFactoryCtx = null;
 let refreshNavLinks = null;
 
-Spicetify._renderNavLinks = (list, isTouchScreenUi) => {
-	const [, refresh] = Spicetify.React.useReducer((x) => x + 1, 0);
+skidify._renderNavLinks = (list, isTouchScreenUi) => {
+	const [, refresh] = skidify.React.useReducer((x) => x + 1, 0);
 	refreshNavLinks = refresh;
 
 	if (
-		!Spicetify.ReactComponent.ButtonTertiary ||
-		!Spicetify.ReactComponent.Navigation ||
-		!Spicetify.ReactComponent.TooltipWrapper ||
-		!Spicetify.ReactComponent.ScrollableContainer ||
-		!Spicetify.Platform.History ||
-		!Spicetify.Platform.LocalStorageAPI
+		!skidify.ReactComponent.ButtonTertiary ||
+		!skidify.ReactComponent.Navigation ||
+		!skidify.ReactComponent.TooltipWrapper ||
+		!skidify.ReactComponent.ScrollableContainer ||
+		!skidify.Platform.History ||
+		!skidify.Platform.LocalStorageAPI
 	)
 		return;
 
 	const navLinkFactory = isTouchScreenUi ? NavLinkGlobal : NavLinkSidebar;
 
-	if (!navLinkFactoryCtx) navLinkFactoryCtx = Spicetify.React.createContext(null);
+	if (!navLinkFactoryCtx) navLinkFactoryCtx = skidify.React.createContext(null);
 	const registered = [];
 
 	for (const app of list) {
 		let manifest;
 		try {
 			const request = new XMLHttpRequest();
-			request.open("GET", `spicetify-routes-${app}.json`, false);
+			request.open("GET", `skidify-routes-${app}.json`, false);
 			request.send(null);
 			manifest = JSON.parse(request.responseText);
 		} catch {
@@ -2436,7 +2436,7 @@ Spicetify._renderNavLinks = (list, isTouchScreenUi) => {
 
 		let appProper = manifest.name;
 		if (typeof appProper === "object") {
-			appProper = appProper[Spicetify.Locale?.getLocale()] || appProper.en;
+			appProper = appProper[skidify.Locale?.getLocale()] || appProper.en;
 		}
 		if (!appProper) {
 			appProper = app[0].toUpperCase() + app.slice(1);
@@ -2448,9 +2448,9 @@ Spicetify._renderNavLinks = (list, isTouchScreenUi) => {
 	}
 
 	(function addStyling() {
-		if (document.querySelector("style.spicetify-navlinks")) return;
+		if (document.querySelector("style.skidify-navlinks")) return;
 		const style = document.createElement("style");
-		style.className = "spicetify-navlinks";
+		style.className = "skidify-navlinks";
 		style.innerHTML = `
 	:root {
 		--max-custom-navlink-count: 4;
@@ -2478,76 +2478,76 @@ Spicetify._renderNavLinks = (list, isTouchScreenUi) => {
 	})();
 
 	const wrapScrollableContainer = (element) =>
-		Spicetify.React.createElement(
+		skidify.React.createElement(
 			"div",
 			{ className: "custom-navlinks-scrollable_container" },
-			Spicetify.React.createElement(Spicetify.ReactComponent.ScrollableContainer, null, element)
+			skidify.React.createElement(skidify.ReactComponent.ScrollableContainer, null, element)
 		);
 
 	const NavLinks = () =>
-		Spicetify.React.createElement(
+		skidify.React.createElement(
 			navLinkFactoryCtx.Provider,
 			{ value: navLinkFactory },
-			registered.map((NavLinkElement) => Spicetify.React.createElement(NavLink, NavLinkElement, null))
+			registered.map((NavLinkElement) => skidify.React.createElement(NavLink, NavLinkElement, null))
 		);
 
 	return isTouchScreenUi ? wrapScrollableContainer(NavLinks()) : NavLinks();
 };
 
 const NavLink = ({ appProper, appRoutePath, icon, activeIcon }) => {
-	const isActive = Spicetify.Platform.History.location.pathname?.startsWith(appRoutePath);
+	const isActive = skidify.Platform.History.location.pathname?.startsWith(appRoutePath);
 	const createIcon = () => createIconComponent(isActive ? activeIcon : icon, 24);
 
-	const NavLinkFactory = Spicetify.React.useContext(navLinkFactoryCtx);
+	const NavLinkFactory = skidify.React.useContext(navLinkFactoryCtx);
 
-	return NavLinkFactory && Spicetify.React.createElement(NavLinkFactory, { appProper, appRoutePath, createIcon, isActive }, null);
+	return NavLinkFactory && skidify.React.createElement(NavLinkFactory, { appProper, appRoutePath, createIcon, isActive }, null);
 };
 
 const NavLinkSidebar = ({ appProper, appRoutePath, createIcon, isActive }) => {
-	const isSidebarCollapsed = Spicetify.Platform.LocalStorageAPI.getItem("ylx-sidebar-state") === 1;
+	const isSidebarCollapsed = skidify.Platform.LocalStorageAPI.getItem("ylx-sidebar-state") === 1;
 
-	return Spicetify.React.createElement(
+	return skidify.React.createElement(
 		"li",
 		{ className: "main-yourLibraryX-navItem InvalidDropTarget" },
-		Spicetify.React.createElement(
-			Spicetify.ReactComponent.TooltipWrapper,
+		skidify.React.createElement(
+			skidify.ReactComponent.TooltipWrapper,
 			{ label: isSidebarCollapsed ? appProper : null, disabled: !isSidebarCollapsed, placement: "right" },
-			Spicetify.React.createElement(
-				Spicetify.ReactComponent.Navigation,
+			skidify.React.createElement(
+				skidify.ReactComponent.Navigation,
 				{
 					to: appRoutePath,
 					referrer: "other",
-					className: Spicetify.classnames("link-subtle", "main-yourLibraryX-navLink", {
+					className: skidify.classnames("link-subtle", "main-yourLibraryX-navLink", {
 						"main-yourLibraryX-navLinkActive": isActive,
 					}),
 					onClick: () => undefined,
 					"aria-label": appProper,
 				},
 				createIcon(),
-				!isSidebarCollapsed && Spicetify.React.createElement(Spicetify.ReactComponent.TextComponent, { variant: "balladBold" }, appProper)
+				!isSidebarCollapsed && skidify.React.createElement(skidify.ReactComponent.TextComponent, { variant: "balladBold" }, appProper)
 			)
 		)
 	);
 };
 
 const NavLinkGlobal = ({ appProper, appRoutePath, createIcon, isActive }) => {
-	return Spicetify.React.createElement(
-		Spicetify.ReactComponent.TooltipWrapper,
+	return skidify.React.createElement(
+		skidify.ReactComponent.TooltipWrapper,
 		{ label: appProper },
-		Spicetify.React.createElement(Spicetify.ReactComponent.ButtonTertiary, {
+		skidify.React.createElement(skidify.ReactComponent.ButtonTertiary, {
 			iconOnly: createIcon,
-			className: Spicetify.classnames("link-subtle", "main-globalNav-navLink", "main-globalNav-link-icon", "custom-navlink", {
+			className: skidify.classnames("link-subtle", "main-globalNav-navLink", "main-globalNav-link-icon", "custom-navlink", {
 				"main-globalNav-navLinkActive": isActive,
 			}),
 			"aria-label": appProper,
-			onClick: () => Spicetify.Platform.History.push(appRoutePath),
+			onClick: () => skidify.Platform.History.push(appRoutePath),
 		})
 	);
 };
 
 class _HTMLGenericModal extends HTMLElement {
 	hide() {
-		Spicetify.ReactDOM.unmountComponentAtNode(this.querySelector("main"));
+		skidify.ReactDOM.unmountComponentAtNode(this.querySelector("main"));
 		this.remove();
 	}
 
@@ -2577,8 +2577,8 @@ class _HTMLGenericModal extends HTMLElement {
 			if (!this.querySelector(".GenericModal").contains(event.target)) hidePopup();
 		});
 
-		if (Spicetify.React.isValidElement(content)) {
-			Spicetify.ReactDOM.render(content, main);
+		if (skidify.React.isValidElement(content)) {
+			skidify.ReactDOM.render(content, main);
 		} else if (typeof content === "string") {
 			main.innerHTML = content;
 		} else {
@@ -2588,9 +2588,9 @@ class _HTMLGenericModal extends HTMLElement {
 	}
 }
 customElements.define("generic-modal", _HTMLGenericModal);
-Spicetify.PopupModal = new _HTMLGenericModal();
+skidify.PopupModal = new _HTMLGenericModal();
 
-Object.defineProperty(Spicetify, "TippyProps", {
+Object.defineProperty(skidify, "TippyProps", {
 	value: {
 		delay: [200, 0],
 		animation: true,
@@ -2632,7 +2632,7 @@ Object.defineProperty(Spicetify, "TippyProps", {
 	writable: false,
 });
 
-Spicetify.Topbar = (() => {
+skidify.Topbar = (() => {
 	let leftGeneratedClassName;
 	let rightGeneratedClassName;
 	let leftContainer;
@@ -2647,9 +2647,9 @@ Spicetify.Topbar = (() => {
 			this.icon = icon;
 			this.onClick = onClick;
 			this.disabled = disabled;
-			this.tippy = Spicetify.Tippy?.(this.element, {
+			this.tippy = skidify.Tippy?.(this.element, {
 				content: label,
-				...Spicetify.TippyProps,
+				...skidify.TippyProps,
 			});
 			this.label = label;
 
@@ -2678,8 +2678,8 @@ Spicetify.Topbar = (() => {
 		}
 		set icon(input) {
 			let newInput = input;
-			if (newInput && Spicetify.SVGIcons[newInput]) {
-				newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons[newInput]}</svg>`;
+			if (newInput && skidify.SVGIcons[newInput]) {
+				newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${skidify.SVGIcons[newInput]}</svg>`;
 			}
 			this._icon = newInput;
 			this.button.innerHTML = newInput;
@@ -2735,18 +2735,18 @@ Spicetify.Topbar = (() => {
 
 	waitForTopbarMounted();
 	(function waitForPlatform() {
-		if (!Spicetify.Platform?.History) {
+		if (!skidify.Platform?.History) {
 			setTimeout(waitForPlatform, 100);
 			return;
 		}
 
-		Spicetify.Platform.History.listen(() => waitForTopbarMounted());
+		skidify.Platform.History.listen(() => waitForTopbarMounted());
 	})();
 
 	return { Button };
 })();
 
-Spicetify.Playbar = (() => {
+skidify.Playbar = (() => {
 	let rightContainer;
 	let sibling;
 	const buttonsStash = new Set();
@@ -2763,9 +2763,9 @@ Spicetify.Playbar = (() => {
 			this.disabled = disabled;
 			this.active = active;
 			addClassname(this.element);
-			this.tippy = Spicetify.Tippy?.(this.element, {
+			this.tippy = skidify.Tippy?.(this.element, {
 				content: label,
-				...Spicetify.TippyProps,
+				...skidify.TippyProps,
 			});
 			this.label = label;
 			registerOnCreate && this.register();
@@ -2783,8 +2783,8 @@ Spicetify.Playbar = (() => {
 		}
 		set icon(input) {
 			let newInput = input;
-			if (newInput && Spicetify.SVGIcons[newInput]) {
-				newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor" stroke="currentColor">${Spicetify.SVGIcons[newInput]}</svg>`;
+			if (newInput && skidify.SVGIcons[newInput]) {
+				newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor" stroke="currentColor">${skidify.SVGIcons[newInput]}</svg>`;
 			}
 			this._icon = newInput;
 			this.iconElement.innerHTML = newInput;
@@ -2856,9 +2856,9 @@ Spicetify.Playbar = (() => {
 			this.onClick = onClick;
 			this.disabled = disabled;
 			this.active = active;
-			this.tippy = Spicetify.Tippy?.(this.element, {
+			this.tippy = skidify.Tippy?.(this.element, {
 				content: label,
-				...Spicetify.TippyProps,
+				...skidify.TippyProps,
 			});
 			this.label = label;
 			registerOnCreate && this.register();
@@ -2876,8 +2876,8 @@ Spicetify.Playbar = (() => {
 		}
 		set icon(input) {
 			let newInput = input;
-			if (newInput && Spicetify.SVGIcons[newInput]) {
-				newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons[newInput]}</svg>`;
+			if (newInput && skidify.SVGIcons[newInput]) {
+				newInput = `<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${skidify.SVGIcons[newInput]}</svg>`;
 			}
 			this._icon = newInput;
 			this.element.innerHTML = newInput;
@@ -2947,17 +2947,17 @@ Spicetify.Playbar = (() => {
 })();
 
 (async function checkForUpdate() {
-	if (!Spicetify.Config) {
+	if (!skidify.Config) {
 		setTimeout(checkForUpdate, 300);
 		return;
 	}
-	const { check_spicetify_update, version } = Spicetify.Config;
+	const { check_skidify_update, version } = skidify.Config;
 	// Skip checking if upgrade check is disabled, or version is Dev/version is not set
-	if (!check_spicetify_update || !version || version === "Dev") return;
+	if (!check_skidify_update || !version || version === "Dev") return;
 	// Fetch latest version from GitHub
 	try {
 		let changelog;
-		const res = await fetch("https://api.github.com/repos/spicetify/cli/releases/latest");
+		const res = await fetch("https://api.github.com/repos/skidify/cli/releases/latest");
 		const { tag_name, html_url, body } = await res.json();
 		const semver = tag_name.slice(1);
 		const changelogRawDataOld = body.match(/## What's Changed([\s\S]*?)\r\n\r/)?.[1];
@@ -2990,44 +2990,44 @@ Spicetify.Playbar = (() => {
 
 		if (semver !== version) {
 			const content = document.createElement("div");
-			content.id = "spicetify-update";
+			content.id = "skidify-update";
 			content.innerHTML = `
 				<style>
-					#spicetify-update a {
+					#skidify-update a {
 						text-decoration: underline;
 					}
-					#spicetify-update pre {
+					#skidify-update pre {
 						cursor: pointer;
 						font-size: 1rem;
 						padding: 0.5rem;
 						background-color: var(--spice-highlight-elevated);
 						border-radius: 0.25rem;
 					}
-					#spicetify-update hr {
+					#skidify-update hr {
 						border-color: var(--spice-subtext);
 						margin-top: 1rem;
 						margin-bottom: 1rem;
 					}
-					#spicetify-update ul,
-					#spicetify-update ol {
+					#skidify-update ul,
+					#skidify-update ol {
 						padding-left: 1.5rem;
 					}
-					#spicetify-update li {
+					#skidify-update li {
 						margin-top: 0.5rem;
 						margin-bottom: 0.5rem;
 						list-style-type: disc;
 					}
-					#spicetify-update ol > li {
+					#skidify-update ol > li {
 						list-style-type: decimal;
 					}
-					.spicetify-update-space {
+					.skidify-update-space {
 						margin-bottom: 25px;
 					}
-					.spicetify-update-little-space {
+					.skidify-update-little-space {
 						margin-bottom: 8px;
 					}
 				</style>
-				<p class="spicetify-update-space">Update Spicetify to receive new features and bug fixes.</p>
+				<p class="skidify-update-space">Update skidify to receive new features and bug fixes.</p>
 				<p> Current version: ${version} </p>
 				<p> Latest version:
 					<a href="${html_url}" target="_blank" rel="noopener noreferrer">
@@ -3048,28 +3048,28 @@ Spicetify.Playbar = (() => {
 				<h3>Guide</h3>
 				<p>Run these commands in the terminal:</p>
 				<ol>
-					<li>Update Spicetify CLI</li>
-					<pre class="spicetify-update-little-space">spicetify update</pre>
-					<p>Spicetify will automatically apply changes to Spotify after upgrading to the latest version.</p>
-					<p>If you installed Spicetify via a package manager, update using said package manager.</p>
+					<li>Update skidify CLI</li>
+					<pre class="skidify-update-little-space">skidify update</pre>
+					<p>skidify will automatically apply changes to Spotify after upgrading to the latest version.</p>
+					<p>If you installed skidify via a package manager, update using said package manager.</p>
 				</ol>
 			`;
 
 			(function waitForTippy() {
-				if (!Spicetify.Tippy) {
+				if (!skidify.Tippy) {
 					setTimeout(waitForTippy, 300);
 					return;
 				}
 
-				const tippy = Spicetify.Tippy(content.querySelectorAll("pre"), {
+				const tippy = skidify.Tippy(content.querySelectorAll("pre"), {
 					content: "Click to copy",
 					hideOnClick: false,
-					...Spicetify.TippyProps,
+					...skidify.TippyProps,
 				});
 
 				for (const instance of tippy) {
 					instance.reference.addEventListener("click", () => {
-						Spicetify.Platform.ClipboardAPI.copy(instance.reference.textContent);
+						skidify.Platform.ClipboardAPI.copy(instance.reference.textContent);
 						instance.setContent("Copied!");
 						setTimeout(() => instance.setContent("Click to copy"), 1000);
 					});
@@ -3077,15 +3077,15 @@ Spicetify.Playbar = (() => {
 			})();
 
 			const updateModal = {
-				title: "Update Spicetify",
+				title: "Update skidify",
 				content,
 				isLarge: true,
 			};
 
-			new Spicetify.Topbar.Button(
-				"Update Spicetify",
+			new skidify.Topbar.Button(
+				"Update skidify",
 				`<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="22px" height="22px" viewBox="0 0 320.000000 400.000000"><g transform="translate(0.000000,400.000000) scale(0.100000,-0.100000)" fill="currentColor"><path d="M2213 3833 c3 -10 18 -52 34 -93 25 -67 28 -88 28 -200 0 -113 -3 -131 -27 -188 -87 -207 -222 -340 -613 -602 -206 -139 -308 -223 -442 -364 -117 -124 -133 -129 -146 -51 -28 173 -52 229 -130 307 -69 69 -133 101 -214 106 -80 5 -113 -3 -113 -28 0 -13 14 -25 43 -38 63 -28 113 -76 144 -140 25 -51 28 -68 28 -152 -1 -141 -27 -221 -193 -600 -133 -305 -164 -459 -138 -685 20 -168 46 -268 101 -382 127 -262 351 -451 642 -540 81 -24 102 -27 268 -27 159 -1 190 2 265 22 172 47 315 129 447 255 164 157 251 322 304 572 26 124 31 308 15 585 -7 130 -6 168 8 240 42 211 148 335 316 371 38 8 50 15 50 29 0 23 -27 30 -120 30 -101 0 -183 -22 -250 -68 -52 -36 -71 -58 -163 -203 -46 -73 -90 -96 -141 -75 -41 17 -51 43 -44 118 4 39 29 97 106 248 198 388 264 606 264 880 0 200 -37 347 -123 492 -53 91 -156 198 -188 198 -18 0 -22 -4 -18 -17z m-591 -2208 c277 -37 576 -148 608 -226 25 -59 -20 -129 -82 -129 -15 0 -61 16 -101 36 -133 67 -288 111 -480 135 -131 16 -447 7 -542 -16 -38 -10 -95 -19 -125 -22 -46 -4 -59 -1 -77 16 -41 38 -42 102 -4 140 33 33 270 78 441 84 109 4 249 -4 362 -18z m-40 -354 c142 -25 276 -68 397 -129 76 -38 97 -53 107 -79 23 -53 -8 -103 -63 -103 -19 0 -67 17 -111 39 -92 46 -203 84 -315 108 -128 28 -450 25 -573 -5 -68 -17 -97 -20 -117 -13 -47 18 -62 80 -29 120 55 69 457 104 704 62z m-48 -326 c183 -28 418 -126 432 -181 7 -29 -16 -69 -45 -77 -12 -3 -62 15 -123 43 -175 82 -240 95 -468 95 -149 0 -214 -4 -274 -18 -43 -9 -87 -17 -97 -17 -27 0 -59 35 -59 64 0 50 47 67 280 100 67 9 266 4 354 -9z"/></g></svg>`,
-				() => Spicetify.PopupModal.display(updateModal)
+				() => skidify.PopupModal.display(updateModal)
 			);
 		}
 	} catch (err) {

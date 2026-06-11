@@ -15,7 +15,7 @@ const ProviderLRCLIB = (() => {
 
 		const body = await fetch(finalURL, {
 			headers: {
-				"x-user-agent": `spicetify v${Spicetify.Config.version} (https://github.com/spicetify/cli)`,
+				"x-user-agent": `skidify v${skidify.Config.version} (https://github.com/skidify/cli)`,
 			},
 		});
 

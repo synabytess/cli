@@ -29,7 +29,7 @@ if (!navigator.serviceWorker) {
 let CACHE = {};
 
 function PopupLyrics() {
-	const { Player, CosmosAsync, LocalStorage, ContextMenu } = Spicetify;
+	const { Player, CosmosAsync, LocalStorage, ContextMenu } = skidify;
 
 	if (!CosmosAsync || !LocalStorage || !ContextMenu) {
 		setTimeout(PopupLyrics, 500);
@@ -283,7 +283,7 @@ function PopupLyrics() {
 
 			const body = await fetch(finalURL, {
 				headers: {
-					"x-user-agent": `spicetify v${Spicetify.Config.version} (https://github.com/spicetify/cli)`,
+					"x-user-agent": `skidify v${skidify.Config.version} (https://github.com/skidify/cli)`,
 				},
 			});
 
@@ -417,7 +417,7 @@ function PopupLyrics() {
 	lyricCtx.fillRect(0, 0, 1, 1);
 	lyricVideo.play();
 
-	const button = new Spicetify.Topbar.Button("Popup Lyrics", "lyrics", () => {
+	const button = new skidify.Topbar.Button("Popup Lyrics", "lyrics", () => {
 		if (!lyricVideoIsOpen) {
 			lyricVideo.requestPictureInPicture();
 		} else {
@@ -450,7 +450,7 @@ function PopupLyrics() {
 
 		const meta = Player.data.item.metadata;
 
-		if (!Spicetify.URI.isTrack(Player.data.item.uri) && !Spicetify.URI.isLocalTrack(Player.data.item.uri)) {
+		if (!skidify.URI.isTrack(Player.data.item.uri) && !skidify.URI.isLocalTrack(Player.data.item.uri)) {
 			return;
 		}
 
@@ -1066,7 +1066,7 @@ button.btn:disabled {
 				serviceContainer
 			);
 		}
-		Spicetify.PopupModal.display({
+		skidify.PopupModal.display({
 			title: "Popup Lyrics",
 			content: configContainer,
 		});
@@ -1079,7 +1079,7 @@ button.btn:disabled {
     <label class="col description">${name}</label>
     <div class="col action"><button class="switch">
         <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-            ${Spicetify.SVGIcons.check}
+            ${skidify.SVGIcons.check}
         </svg>
     </button></div>
 </div>`;
@@ -1227,7 +1227,7 @@ button.btn:disabled {
 			button.innerHTML = "Refreshing token...";
 			button.disabled = true;
 
-			Spicetify.CosmosAsync.get("https://apic-desktop.musixmatch.com/ws/1.1/token.get?app_id=web-desktop-app-v1.0", null, {
+			skidify.CosmosAsync.get("https://apic-desktop.musixmatch.com/ws/1.1/token.get?app_id=web-desktop-app-v1.0", null, {
 				authority: "apic-desktop.musixmatch.com",
 			})
 				.then(({ message: response }) => {
@@ -1271,17 +1271,17 @@ button.btn:disabled {
     <div class="col action">
         <button class="switch small">
             <svg height="10" width="10" viewBox="0 0 16 16" fill="currentColor">
-                ${Spicetify.SVGIcons["chart-up"]}
+                ${skidify.SVGIcons["chart-up"]}
             </svg>
         </button>
         <button class="switch small">
             <svg height="10" width="10" viewBox="0 0 16 16" fill="currentColor">
-                ${Spicetify.SVGIcons["chart-down"]}
+                ${skidify.SVGIcons["chart-down"]}
             </svg>
         </button>
         <button class="switch">
             <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                ${Spicetify.SVGIcons.check}
+                ${skidify.SVGIcons.check}
             </svg>
         </button>
     </div>

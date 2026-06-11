@@ -10,10 +10,10 @@ import (
 
 func MigrateConfigFolder() {
 	if runtime.GOOS == "windows" {
-		source := filepath.Join(os.Getenv("USERPROFILE"), ".spicetify")
+		source := filepath.Join(os.Getenv("USERPROFILE"), ".skidify")
 		if _, err := os.Stat(source); err == nil {
 			spinner, _ := Spinner.Start("Migrating config folder")
-			destination := GetSpicetifyFolder()
+			destination := GetskidifyFolder()
 			err := Copy(source, destination, true, nil)
 			if err != nil {
 				spinner.Fail("Failed to migrate config folder")
@@ -26,8 +26,8 @@ func MigrateConfigFolder() {
 }
 
 func MigrateFolders() {
-	backupPath := filepath.Join(GetSpicetifyFolder(), "Backup")
-	extractedPath := filepath.Join(GetSpicetifyFolder(), "Extracted")
+	backupPath := filepath.Join(GetskidifyFolder(), "Backup")
+	extractedPath := filepath.Join(GetskidifyFolder(), "Extracted")
 
 	if _, err := os.Stat(backupPath); err == nil {
 		newBackupPath := GetStateFolder("Backup")
@@ -85,8 +85,8 @@ func ReplaceEnvVarsInString(input string) string {
 	return replacer.Replace(input)
 }
 
-func GetSpicetifyFolder() string {
-	result, isAvailable := os.LookupEnv("SPICETIFY_CONFIG")
+func GetskidifyFolder() string {
+	result, isAvailable := os.LookupEnv("skidify_CONFIG")
 	defer func() { CheckExistAndCreate(result) }()
 
 	if isAvailable && len(result) > 0 {
@@ -96,7 +96,7 @@ func GetSpicetifyFolder() string {
 	if runtime.GOOS == "windows" {
 		parent := os.Getenv("APPDATA")
 
-		result = filepath.Join(parent, "spicetify")
+		result = filepath.Join(parent, "skidify")
 	} else if runtime.GOOS == "linux" {
 		parent, isAvailable := os.LookupEnv("XDG_CONFIG_HOME")
 
@@ -105,19 +105,19 @@ func GetSpicetifyFolder() string {
 			CheckExistAndCreate(parent)
 		}
 
-		result = filepath.Join(parent, "spicetify")
+		result = filepath.Join(parent, "skidify")
 	} else if runtime.GOOS == "darwin" {
 		parent := filepath.Join(os.Getenv("HOME"), ".config")
 		CheckExistAndCreate(parent)
 
-		result = filepath.Join(parent, "spicetify")
+		result = filepath.Join(parent, "skidify")
 	}
 
 	return result
 }
 
 func GetStateFolder(name string) string {
-	result, isAvailable := os.LookupEnv("SPICETIFY_STATE")
+	result, isAvailable := os.LookupEnv("skidify_STATE")
 	defer func() { CheckExistAndCreate(result) }()
 
 	if isAvailable && len(result) > 0 {
@@ -127,7 +127,7 @@ func GetStateFolder(name string) string {
 	if runtime.GOOS == "windows" {
 		parent := os.Getenv("APPDATA")
 
-		result = filepath.Join(parent, "spicetify")
+		result = filepath.Join(parent, "skidify")
 	} else if runtime.GOOS == "linux" {
 		parent, isAvailable := os.LookupEnv("XDG_STATE_HOME")
 
@@ -136,12 +136,12 @@ func GetStateFolder(name string) string {
 			CheckExistAndCreate(parent)
 		}
 
-		result = filepath.Join(parent, "spicetify")
+		result = filepath.Join(parent, "skidify")
 	} else if runtime.GOOS == "darwin" {
 		parent := filepath.Join(os.Getenv("HOME"), ".local", "state")
 		CheckExistAndCreate(parent)
 
-		result = filepath.Join(parent, "spicetify")
+		result = filepath.Join(parent, "skidify")
 	}
 
 	return GetSubFolder(result, name)
@@ -156,8 +156,8 @@ func GetSubFolder(folder string, name string) string {
 	return dir
 }
 
-var userAppsFolder = GetSubFolder(GetSpicetifyFolder(), "CustomApps")
-var userExtensionsFolder = GetSubFolder(GetSpicetifyFolder(), "Extensions")
+var userAppsFolder = GetSubFolder(GetskidifyFolder(), "CustomApps")
+var userExtensionsFolder = GetSubFolder(GetskidifyFolder(), "Extensions")
 
 func GetCustomAppSubfolderPath(folderPath string) string {
 	entries, err := os.ReadDir(folderPath)

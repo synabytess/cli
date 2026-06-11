@@ -5,24 +5,24 @@
 /// <reference path="../globals.d.ts" />
 
 (async function shufflePlus() {
-	if (!(Spicetify.CosmosAsync && Spicetify.Platform)) {
+	if (!(skidify.CosmosAsync && skidify.Platform)) {
 		setTimeout(shufflePlus, 300);
 		return;
 	}
 
-	const { React } = Spicetify;
+	const { React } = skidify;
 	const { useState } = React;
 	let playbarButton = null;
 
 	function getConfig() {
 		try {
-			const parsed = JSON.parse(Spicetify.LocalStorage.get("shufflePlus:settings"));
+			const parsed = JSON.parse(skidify.LocalStorage.get("shufflePlus:settings"));
 			if (parsed && typeof parsed === "object") {
 				return parsed;
 			}
 			throw "";
 		} catch {
-			Spicetify.LocalStorage.set("shufflePlus:settings", "{}");
+			skidify.LocalStorage.set("shufflePlus:settings", "{}");
 			return {
 				artistMode: "all",
 				artistNameMust: false,
@@ -35,7 +35,7 @@
 	saveConfig();
 
 	function saveConfig() {
-		Spicetify.LocalStorage.set("shufflePlus:settings", JSON.stringify(CONFIG));
+		skidify.LocalStorage.set("shufflePlus:settings", JSON.stringify(CONFIG));
 	}
 
 	function settingsPage() {
@@ -126,7 +126,7 @@
 							},
 						},
 						React.createElement(DisplayIcon, {
-							icon: Spicetify.SVGIcons.check,
+							icon: skidify.SVGIcons.check,
 							size: 16,
 						})
 					)
@@ -196,20 +196,20 @@
 			})
 		);
 
-		Spicetify.PopupModal.display({
+		skidify.PopupModal.display({
 			title: "Shuffle+",
 			content: settingsDOMContent,
 			isLarge: true,
 		});
 	}
 
-	new Spicetify.Menu.Item("Shuffle+", false, settingsPage, "shuffle").register();
+	new skidify.Menu.Item("Shuffle+", false, settingsPage, "shuffle").register();
 
-	const { Type } = Spicetify.URI;
+	const { Type } = skidify.URI;
 
 	function shouldAddShufflePlus(uri) {
 		if (uri.length === 1) {
-			const uriObj = Spicetify.URI.fromString(uri[0]);
+			const uriObj = skidify.URI.fromString(uri[0]);
 			switch (uriObj.type) {
 				case Type.PLAYLIST:
 				case Type.PLAYLIST_V2:
@@ -226,8 +226,8 @@
 	}
 
 	function shouldAddShufflePlusLiked(uri) {
-		const uriObj = Spicetify.URI.fromString(uri[0]);
-		if (Spicetify.Platform.History.location.pathname === "/collection/tracks") {
+		const uriObj = skidify.URI.fromString(uri[0]);
+		if (skidify.Platform.History.location.pathname === "/collection/tracks") {
 			switch (uriObj.type) {
 				case Type.TRACK:
 					return true;
@@ -237,8 +237,8 @@
 	}
 
 	function shouldAddShufflePlusLocal(uri) {
-		const uriObj = Spicetify.URI.fromString(uri[0]);
-		if (Spicetify.Platform.History.location.pathname === "/collection/local-files") {
+		const uriObj = skidify.URI.fromString(uri[0]);
+		if (skidify.Platform.History.location.pathname === "/collection/local-files") {
 			switch (uriObj.type) {
 				case Type.TRACK:
 				case Type.LOCAL_TRACK:
@@ -248,7 +248,7 @@
 		return false;
 	}
 
-	new Spicetify.ContextMenu.Item(
+	new skidify.ContextMenu.Item(
 		"Play with Shuffle+",
 		async (uri) => {
 			if (uri.length === 1) {
@@ -261,7 +261,7 @@
 		"shuffle"
 	).register();
 
-	new Spicetify.ContextMenu.Item(
+	new skidify.ContextMenu.Item(
 		"Shuffle+ Liked Songs",
 		async (uri) => {
 			await fetchAndPlay(uri[0]);
@@ -270,7 +270,7 @@
 		"heart-active"
 	).register();
 
-	new Spicetify.ContextMenu.Item(
+	new skidify.ContextMenu.Item(
 		"Shuffle+ Local Files",
 		async (uri) => {
 			await fetchAndPlay(uri[0]);
@@ -282,7 +282,7 @@
 	renderQueuePlaybarButton();
 	function renderQueuePlaybarButton() {
 		if (!playbarButton) {
-			playbarButton = new Spicetify.Playbar.Button(
+			playbarButton = new skidify.Playbar.Button(
 				"Shuffle+ Queue Tracks",
 				"enhance",
 				async () => {
@@ -298,7 +298,7 @@
 	}
 
 	async function fetchPlaylistTracks(uri) {
-		const res = await Spicetify.Platform.PlaylistAPI.getContents(`spotify:playlist:${uri}`, {
+		const res = await skidify.Platform.PlaylistAPI.getContents(`spotify:playlist:${uri}`, {
 			limit: 9999999,
 		});
 		return res.items.filter((track) => track.isPlayable).map((track) => track.uri);
@@ -316,7 +316,7 @@
 	}
 
 	async function fetchFolderTracks(uri) {
-		const res = await Spicetify.Platform.RootlistAPI.getContents();
+		const res = await skidify.Platform.RootlistAPI.getContents();
 
 		const requestFolder = searchFolder(res.items, uri);
 		if (!requestFolder) throw "Cannot find folder";
@@ -327,7 +327,7 @@
 
 			for (const i of folder.items) {
 				if (i.type === "playlist") {
-					const uriObj = Spicetify.URI.fromString(i.uri);
+					const uriObj = skidify.URI.fromString(i.uri);
 					const uri = uriObj._base62Id ?? uriObj.id;
 					requestPlaylists.push(await fetchPlaylistTracks(uri));
 				} else if (i.type === "folder") await fetchNested(i);
@@ -340,8 +340,8 @@
 	}
 
 	async function fetchAlbumTracks(uri, includeMetadata = false) {
-		const { queryAlbumTracks } = Spicetify.GraphQL.Definitions;
-		const { data, errors } = await Spicetify.GraphQL.Request(queryAlbumTracks, {
+		const { queryAlbumTracks } = skidify.GraphQL.Definitions;
+		const { data, errors } = await skidify.GraphQL.Request(queryAlbumTracks, {
 			uri,
 			offset: 0,
 			limit: 100,
@@ -371,7 +371,7 @@
 			}
 
 			artistFetchTypeCount[type]++;
-			Spicetify.showNotification(`${artistFetchTypeCount[type]} / ${res.length} ${type}s`);
+			skidify.showNotification(`${artistFetchTypeCount[type]} / ${res.length} ${type}s`);
 
 			for (const track of albumRes) {
 				if (!CONFIG.artistNameMust || track.artists.items.some((artist) => artist.profile.name === artistName)) allTracks.push(track.uri);
@@ -396,7 +396,7 @@
 			value: null,
 		};
 
-		const discography = await Spicetify.GraphQL.Request(queryArtistDiscographyAll, {
+		const discography = await skidify.GraphQL.Request(queryArtistDiscographyAll, {
 			uri,
 			offset: 0,
 			// Limit 100 since GraphQL has resource limit
@@ -404,9 +404,9 @@
 		});
 		if (discography.errors) throw discography.errors[0].message;
 
-		const overview = await Spicetify.GraphQL.Request(queryArtistOverview, {
+		const overview = await skidify.GraphQL.Request(queryArtistOverview, {
 			uri,
-			locale: Spicetify.Locale.getLocale(),
+			locale: skidify.Locale.getLocale(),
 			includePrerelease: false,
 		});
 		if (overview.errors) throw overview.errors[0].message;
@@ -426,7 +426,7 @@
 	}
 
 	async function fetchArtistLikedTracks(uri) {
-		const artistRes = await Spicetify.CosmosAsync.get(`sp://core-collection/unstable/@/list/tracks/artist/${uri}?responseFormat=protobufJson`);
+		const artistRes = await skidify.CosmosAsync.get(`sp://core-collection/unstable/@/list/tracks/artist/${uri}?responseFormat=protobufJson`);
 
 		const allTracks = artistRes.item?.map((artistTrack) => {
 			if (artistTrack.trackMetadata.playable) return artistTrack.trackMetadata.link;
@@ -436,10 +436,10 @@
 	}
 
 	async function fetchArtistTopTenTracks(uri) {
-		const { queryArtistOverview } = Spicetify.GraphQL.Definitions;
-		const { data, errors } = await Spicetify.GraphQL.Request(queryArtistOverview, {
+		const { queryArtistOverview } = skidify.GraphQL.Definitions;
+		const { data, errors } = await skidify.GraphQL.Request(queryArtistOverview, {
 			uri,
-			locale: Spicetify.Locale.getLocale(),
+			locale: skidify.Locale.getLocale(),
 			includePrerelease: false,
 		});
 		if (errors) throw errors[0].message;
@@ -447,19 +447,19 @@
 	}
 
 	async function fetchLikedTracks() {
-		const res = await Spicetify.CosmosAsync.get("sp://core-collection/unstable/@/list/tracks/all?responseFormat=protobufJson");
+		const res = await skidify.CosmosAsync.get("sp://core-collection/unstable/@/list/tracks/all?responseFormat=protobufJson");
 
 		return res.item.filter((track) => track.trackMetadata.playable).map((track) => track.trackMetadata.link);
 	}
 
 	async function fetchLocalTracks() {
-		const res = await Spicetify.Platform.LocalFilesAPI.getTracks();
+		const res = await skidify.Platform.LocalFilesAPI.getTracks();
 
 		return res.map((track) => track.uri);
 	}
 
 	function fetchQueue() {
-		const { _queueState } = Spicetify.Platform.PlayerAPI._queue;
+		const { _queueState } = skidify.Platform.PlayerAPI._queue;
 		const nextUp = _queueState.nextUp.map((track) => track.uri);
 		const queued = _queueState.queued.map((track) => track.uri);
 		const array = [...new Set([...nextUp, ...queued])];
@@ -470,7 +470,7 @@
 
 	async function fetchCollection(uriObj) {
 		const { category, type } = uriObj;
-		const { pathname } = Spicetify.Platform.History.location;
+		const { pathname } = skidify.Platform.History.location;
 
 		switch (type) {
 			case Type.TRACK:
@@ -493,7 +493,7 @@
 	}
 
 	async function fetchShows(uri) {
-		const res = await Spicetify.CosmosAsync.get(`sp://core-show/v1/shows/${uri}?responseFormat=protobufJson`);
+		const res = await skidify.CosmosAsync.get(`sp://core-show/v1/shows/${uri}?responseFormat=protobufJson`);
 		return res.items.filter((track) => track.episodePlayState.isPlayable).map((track) => track.episodeMetadata.link);
 	}
 
@@ -523,7 +523,7 @@
 		// Delimits the end of our list, as Spotify may add new context tracks to the queue
 		list.push("spotify:delimiter");
 
-		const { _queue, _client } = Spicetify.Platform.PlayerAPI._queue;
+		const { _queue, _client } = skidify.Platform.PlayerAPI._queue;
 		const { prevTracks, queueRevision } = _queue;
 
 		// Format tracks with default values
@@ -548,37 +548,37 @@
 		});
 
 		if (context) {
-			const { sessionId } = Spicetify.Platform.PlayerAPI.getState();
-			Spicetify.Platform.PlayerAPI.updateContext(sessionId, {
+			const { sessionId } = skidify.Platform.PlayerAPI.getState();
+			skidify.Platform.PlayerAPI.updateContext(sessionId, {
 				uri: context,
 				url: `context://${context}`,
 			});
 		}
 
-		Spicetify.Player.next();
+		skidify.Player.next();
 
 		switch (type) {
 			case Type.ARTIST:
 				if (CONFIG.artistMode === "topTen") {
-					Spicetify.showNotification(`Shuffled Top ${count} Songs`);
+					skidify.showNotification(`Shuffled Top ${count} Songs`);
 					break;
 				}
 				if (CONFIG.artistMode === "likedSongArtist") {
-					Spicetify.showNotification(`Shuffled ${count} Liked Songs`);
+					skidify.showNotification(`Shuffled ${count} Liked Songs`);
 					break;
 				}
 				if (CONFIG.artistMode === "single") {
-					Spicetify.showNotification(`Shuffled ${artistFetchTypeCount.single} Singles, Total of ${count} Songs`);
+					skidify.showNotification(`Shuffled ${artistFetchTypeCount.single} Singles, Total of ${count} Songs`);
 					break;
 				}
 				if (CONFIG.artistMode === "album") {
-					Spicetify.showNotification(`Shuffled ${artistFetchTypeCount.album} Albums, Total of ${count} Songs`);
+					skidify.showNotification(`Shuffled ${artistFetchTypeCount.album} Albums, Total of ${count} Songs`);
 					break;
 				}
-				Spicetify.showNotification(`Shuffled ${artistFetchTypeCount.album} Albums, ${artistFetchTypeCount.single} Singles, Total of ${count} Songs`);
+				skidify.showNotification(`Shuffled ${artistFetchTypeCount.album} Albums, ${artistFetchTypeCount.single} Singles, Total of ${count} Songs`);
 				break;
 			default:
-				Spicetify.showNotification(`Shuffled ${count} Songs`);
+				skidify.showNotification(`Shuffled ${count} Songs`);
 		}
 
 		artistFetchTypeCount.album = 0;
@@ -599,7 +599,7 @@
 				list = rawUri;
 				context = null;
 			} else {
-				const uriObj = Spicetify.URI.fromString(rawUri);
+				const uriObj = skidify.URI.fromString(rawUri);
 				type = uriObj.type;
 				uri = uriObj._base62Id ?? uriObj.id;
 
@@ -636,7 +636,7 @@
 				}
 
 				if (!list?.length) {
-					Spicetify.showNotification("Nothing to play", true);
+					skidify.showNotification("Nothing to play", true);
 					return;
 				}
 
@@ -648,7 +648,7 @@
 
 			await Queue(shuffle(list), context, type);
 		} catch (error) {
-			Spicetify.showNotification(String(error), true);
+			skidify.showNotification(String(error), true);
 			console.error(error);
 		}
 	}

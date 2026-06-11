@@ -93,7 +93,7 @@ const TopBarContent = ({ links, activeLink, lockLink, switchCallback, lockCallba
 };
 
 const TabBarContext = ({ children }) => {
-	return Spicetify.ReactDOM.createPortal(
+	return skidify.ReactDOM.createPortal(
 		react.createElement(
 			"div",
 			{

@@ -2,7 +2,7 @@ let configContainer;
 
 function openConfig() {
 	if (configContainer) {
-		Spicetify.PopupModal.display({
+		skidify.PopupModal.display({
 			title: "Reddit",
 			content: configContainer,
 		});
@@ -109,7 +109,7 @@ function openConfig() {
 		serviceInput
 	);
 
-	Spicetify.PopupModal.display({
+	skidify.PopupModal.display({
 		title: "Reddit",
 		content: configContainer,
 	});
@@ -122,7 +122,7 @@ function createSlider(name, key) {
     <label class="col description">${name}</label>
     <div class="col action"><button class="switch">
         <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-            ${Spicetify.SVGIcons.check}
+            ${skidify.SVGIcons.check}
         </svg>
     </button></div>
 </div>`;
@@ -149,17 +149,17 @@ function createServiceOption(id, posCallback, removeCallback) {
     <div class="col action">
         <button class="switch small">
             <svg height="10" width="10" viewBox="0 0 16 16" fill="currentColor">
-                ${Spicetify.SVGIcons["chart-up"]}
+                ${skidify.SVGIcons["chart-up"]}
             </svg>
         </button>
         <button class="switch small">
             <svg height="10" width="10" viewBox="0 0 16 16" fill="currentColor">
-                ${Spicetify.SVGIcons["chart-down"]}
+                ${skidify.SVGIcons["chart-down"]}
             </svg>
         </button>
         <button class="switch small">
             <svg height="10" width="10" viewBox="0 0 16 16" fill="currentColor">
-                ${Spicetify.SVGIcons.x}
+                ${skidify.SVGIcons.x}
             </svg>
         </button>
     </div>

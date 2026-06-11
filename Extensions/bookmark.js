@@ -6,7 +6,7 @@
 /// <reference path="../globals.d.ts" />
 
 (function Bookmark() {
-	const { CosmosAsync, Player, LocalStorage, ContextMenu, URI } = Spicetify;
+	const { CosmosAsync, Player, LocalStorage, ContextMenu, URI } = skidify;
 	if (!(CosmosAsync && URI)) {
 		setTimeout(Bookmark, 300);
 		return;
@@ -17,7 +17,7 @@
 	const REMOVE_TEXT = "Remove";
 
 	// Local Storage keys
-	const STORAGE_KEY = "bookmark_spicetify";
+	const STORAGE_KEY = "bookmark_skidify";
 
 	class BookmarkCollection {
 		constructor() {
@@ -152,12 +152,12 @@
 				: ""
 		}
     <button class="bookmark-controls" data-tippy-content="${REMOVE_TEXT}"><svg width="8" height="8" viewBox="0 0 16 16" fill="currentColor">${
-			Spicetify.SVGIcons.x
+			skidify.SVGIcons.x
 		}</svg></button>
 </div>
 `;
 
-			Spicetify.Tippy(this.querySelectorAll("[data-tippy-content]"), Spicetify.TippyProps);
+			skidify.Tippy(this.querySelectorAll("[data-tippy-content]"), skidify.TippyProps);
 			if (isPlayable) {
 				/** @type {HTMLButtonElement} */
 				const playButton = this.querySelector("button.main-playButton-PlayButton");
@@ -182,7 +182,7 @@
 
 	const LIST = new BookmarkCollection();
 
-	new Spicetify.Topbar.Button(
+	new skidify.Topbar.Button(
 		BUTTON_NAME_TEXT,
 		`<svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M 13.350175,0.37457282 C 9.7802043,0.37457282 6.2102339,0.37457282 2.6402636,0.37457282 2.1901173,0.43000784 2.3537108,0.94911284 2.3229329,1.2621688 2.3229329,5.9446788 2.3229329,10.62721 2.3229329,15.309742 2.4084662,15.861041 2.9630936,15.536253 3.1614158,15.248148 4.7726941,13.696623 6.3839408,12.145098 7.9952191,10.593573 9.7069009,12.241789 11.418583,13.890005 13.130265,15.53822 13.626697,15.863325 13.724086,15.200771 13.667506,14.853516 13.667506,10.132999 13.667506,5.4124518 13.667506,0.69190384 13.671726,0.52196684 13.520105,0.37034182 13.350175,0.37457282 Z M 13.032844,14.563698 C 11.426929,13.017345 9.8210448,11.470993 8.2151293,9.9246401 7.8614008,9.6568761 7.6107412,10.12789 7.3645243,10.320193 5.8955371,11.734694 4.4265815,13.149196 2.9575943,14.563698 2.9575943,10.045543 2.9575943,5.5273888 2.9575943,1.0092338 6.3160002,1.0092338 9.674438,1.0092338 13.032844,1.0092338 13.032844,5.5273888 13.032844,10.045543 13.032844,14.563698 Z"></path></svg>`,
 		(self) => {
@@ -200,9 +200,9 @@
 	 */
 	function createMenuItem(title, callback) {
 		const wrapper = document.createElement("div");
-		Spicetify.ReactDOM.render(
-			Spicetify.React.createElement(
-				Spicetify.ReactComponent.MenuItem,
+		skidify.ReactDOM.render(
+			skidify.React.createElement(
+				skidify.ReactComponent.MenuItem,
 				{
 					onClick: () => {
 						callback?.();
@@ -238,11 +238,11 @@
 		let description;
 		let contextUri;
 
-		const context = Spicetify.Platform.History.location.pathname;
+		const context = skidify.Platform.History.location.pathname;
 		try {
-			contextUri = Spicetify.URI.fromString(context);
+			contextUri = skidify.URI.fromString(context);
 		} catch (e) {
-			Spicetify.showNotification("Cannot bookmark this page", true);
+			skidify.showNotification("Cannot bookmark this page", true);
 			return;
 		}
 		const uri = contextUri.toURI();
@@ -297,7 +297,7 @@
 		} else {
 			meta.description = Player.data.item.metadata.artist_name;
 		}
-		const playerState = Spicetify.Player.data;
+		const playerState = skidify.Player.data;
 		const contextUri = URI.fromString(playerState.context_uri ?? playerState.context.uri);
 		if (contextUri && (contextUri.type === URI.Type.PLAYLIST || contextUri.type === URI.Type.PLAYLIST_V2 || contextUri.type === URI.Type.ALBUM)) {
 			meta.context = `/${contextUri.toURLPath()}?uid=${Player.data.item.uid}`;
@@ -326,13 +326,13 @@
 
 	function createMenu() {
 		const container = document.createElement("div");
-		container.id = "bookmark-spicetify";
+		container.id = "bookmark-skidify";
 		container.className = "context-menu-container";
 		container.style.zIndex = "1029";
 
 		const style = document.createElement("style");
 		style.textContent = `
-#bookmark-spicetify {
+#bookmark-skidify {
     position: absolute;
     left: 0;
     right: 0;
@@ -449,11 +449,11 @@
 	 */
 	async function onLinkClick(info) {
 		if (info.context?.startsWith("/")) {
-			Spicetify.Platform.History.push(info.context);
+			skidify.Platform.History.push(info.context);
 			return;
 		}
-		const url = Spicetify.URI.fromString(info.uri).toURLPath(true);
-		Spicetify.Platform.History.push(url);
+		const url = skidify.URI.fromString(info.uri).toURLPath(true);
+		skidify.Platform.History.push(url);
 	}
 
 	function onPlayClick(info) {
@@ -471,14 +471,14 @@
 			}
 		}
 
-		Spicetify.Player.playUri(uri, {}, options);
+		skidify.Player.playUri(uri, {}, options);
 	}
 
 	const fetchAlbum = async (uri) => {
-		const { getAlbum } = Spicetify.GraphQL.Definitions;
-		const { data } = await Spicetify.GraphQL.Request(getAlbum, {
+		const { getAlbum } = skidify.GraphQL.Definitions;
+		const { data } = await skidify.GraphQL.Request(getAlbum, {
 			uri,
-			locale: Spicetify.Locale.getLocale(),
+			locale: skidify.Locale.getLocale(),
 			offset: 0,
 			limit: 10,
 		});
@@ -505,10 +505,10 @@
 	};
 
 	const fetchArtist = async (uri) => {
-		const { queryArtistOverview } = Spicetify.GraphQL.Definitions;
-		const { data } = await Spicetify.GraphQL.Request(queryArtistOverview, {
+		const { queryArtistOverview } = skidify.GraphQL.Definitions;
+		const { data } = await skidify.GraphQL.Request(queryArtistOverview, {
 			uri,
-			locale: Spicetify.Locale.getLocale(),
+			locale: skidify.Locale.getLocale(),
 			includePrerelease: false,
 		});
 		const res = data.artistUnion;
@@ -526,8 +526,8 @@
 		const base62 = uri.split(":")[2];
 		const res = await CosmosAsync.get(`https://api.spotify.com/v1/tracks/${base62}`);
 		let newContext;
-		if (context && uid && Spicetify.URI.isPlaylistV1OrV2(context)) {
-			newContext = `${Spicetify.URI.fromString(context).toURLPath(true)}?uid=${uid}`;
+		if (context && uid && skidify.URI.isPlaylistV1OrV2(context)) {
+			newContext = `${skidify.URI.fromString(context).toURLPath(true)}?uid=${uid}`;
 		}
 		return {
 			uri,
@@ -551,7 +551,7 @@
 	};
 
 	const fetchPlaylist = async (uri) => {
-		const res = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}/metadata`, {
+		const res = await skidify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}/metadata`, {
 			policy: { picture: true, name: true },
 		});
 		return {
@@ -562,29 +562,29 @@
 		};
 	};
 
-	new Spicetify.ContextMenu.Item(
+	new skidify.ContextMenu.Item(
 		"Bookmark",
 		async ([uri], [uid] = [], context = undefined) => {
 			const type = uri.split(":")[1];
 			let meta;
 			switch (type) {
-				case Spicetify.URI.Type.TRACK:
+				case skidify.URI.Type.TRACK:
 					meta = await fetchTrack(uri, uid, context);
 					break;
-				case Spicetify.URI.Type.ALBUM:
+				case skidify.URI.Type.ALBUM:
 					meta = await fetchAlbum(uri);
 					break;
-				case Spicetify.URI.Type.ARTIST:
+				case skidify.URI.Type.ARTIST:
 					meta = await fetchArtist(uri);
 					break;
-				case Spicetify.URI.Type.SHOW:
+				case skidify.URI.Type.SHOW:
 					meta = await fetchShow(uri);
 					break;
-				case Spicetify.URI.Type.EPISODE:
+				case skidify.URI.Type.EPISODE:
 					meta = await fetchEpisode(uri);
 					break;
-				case Spicetify.URI.Type.PLAYLIST:
-				case Spicetify.URI.Type.PLAYLIST_V2:
+				case skidify.URI.Type.PLAYLIST:
+				case skidify.URI.Type.PLAYLIST_V2:
 					meta = await fetchPlaylist(uri);
 					break;
 			}
@@ -593,13 +593,13 @@
 		([uri]) => {
 			const type = uri.split(":")[1];
 			switch (type) {
-				case Spicetify.URI.Type.TRACK:
-				case Spicetify.URI.Type.ALBUM:
-				case Spicetify.URI.Type.ARTIST:
-				case Spicetify.URI.Type.SHOW:
-				case Spicetify.URI.Type.EPISODE:
-				case Spicetify.URI.Type.PLAYLIST:
-				case Spicetify.URI.Type.PLAYLIST_V2:
+				case skidify.URI.Type.TRACK:
+				case skidify.URI.Type.ALBUM:
+				case skidify.URI.Type.ARTIST:
+				case skidify.URI.Type.SHOW:
+				case skidify.URI.Type.EPISODE:
+				case skidify.URI.Type.PLAYLIST:
+				case skidify.URI.Type.PLAYLIST_V2:
 					return true;
 			}
 			return false;

@@ -1,8 +1,8 @@
 # Executables
 bin
 cli
-spicetify
-spicetify-cli
+skidify
+skidify-cli
 *.exe
 
 # MacOS

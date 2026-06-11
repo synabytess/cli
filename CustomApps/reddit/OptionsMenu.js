@@ -13,7 +13,7 @@ const OptionsMenuItemIcon = react.createElement(
 
 const OptionsMenuItem = react.memo(({ onSelect, value, isSelected }) => {
 	return react.createElement(
-		Spicetify.ReactComponent.MenuItem,
+		skidify.ReactComponent.MenuItem,
 		{
 			onClick: onSelect,
 			icon: isSelected ? OptionsMenuItemIcon : null,
@@ -25,21 +25,21 @@ const OptionsMenuItem = react.memo(({ onSelect, value, isSelected }) => {
 
 const OptionsMenu = react.memo(({ options, onSelect, selected, defaultValue, bold = false }) => {
 	/**
-	 * <Spicetify.ReactComponent.ContextMenu
+	 * <skidify.ReactComponent.ContextMenu
 	 *      menu = { options.map(a => <OptionsMenuItem>) }
 	 * >
 	 *      <button>
 	 *          <span> {select.value} </span>
 	 *          <svg> arrow icon </svg>
 	 *      </button>
-	 * </Spicetify.ReactComponent.ContextMenu>
+	 * </skidify.ReactComponent.ContextMenu>
 	 */
 	const menuRef = react.useRef(null);
 	return react.createElement(
-		Spicetify.ReactComponent.ContextMenu,
+		skidify.ReactComponent.ContextMenu,
 		{
 			menu: react.createElement(
-				Spicetify.ReactComponent.Menu,
+				skidify.ReactComponent.Menu,
 				{},
 				options.map(({ key, value }) =>
 					react.createElement(OptionsMenuItem, {

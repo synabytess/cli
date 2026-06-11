@@ -9,14 +9,14 @@ import (
 	"strings"
 
 	"github.com/go-ini/ini"
-	"github.com/spicetify/cli/src/utils"
+	"github.com/skidify/cli/src/utils"
 )
 
 var (
-	spicetifyFolder         = utils.GetSpicetifyFolder()
+	skidifyFolder         = utils.GetskidifyFolder()
 	rawFolder, themedFolder = getExtractFolder()
 	backupFolder            = utils.GetStateFolder("Backup")
-	userThemesFolder        = utils.GetSubFolder(spicetifyFolder, "Themes")
+	userThemesFolder        = utils.GetSubFolder(skidifyFolder, "Themes")
 	quiet                   bool
 	isAppX                  = false
 	spotifyPath             string
@@ -51,7 +51,7 @@ func InitConfig(isQuiet bool) {
 }
 
 // InitPaths checks various essential paths' availabilities,
-// tries to auto-detect them and stops spicetify when any one
+// tries to auto-detect them and stops skidify when any one
 // of them is invalid.
 func InitPaths() {
 	spotifyPath = settingSection.Key("spotify_path").String()
@@ -111,7 +111,7 @@ func InitPaths() {
 	appPath = filepath.Join(spotifyPath, "Apps")
 
 	if isAppX {
-		appDestPath = filepath.Join(spicetifyFolder, "AppX")
+		appDestPath = filepath.Join(skidifyFolder, "AppX")
 	} else {
 		appDestPath = appPath
 	}
@@ -203,7 +203,7 @@ func InitSetting() {
 
 // GetConfigPath returns location of config file
 func GetConfigPath() string {
-	return filepath.Join(spicetifyFolder, "config-xpui.ini")
+	return filepath.Join(skidifyFolder, "config-xpui.ini")
 }
 
 // GetSpotifyPath returns location of Spotify client
@@ -275,7 +275,7 @@ func ReadAnswer(info string, defaultAnswer bool, quietModeAnswer bool) bool {
 
 // CheckUpdate fetches latest package version from Github API and inform user if there is new release
 func CheckUpdate(version string) {
-	if !settingSection.Key("check_spicetify_update").MustBool() || version == "Dev" {
+	if !settingSection.Key("check_skidify_update").MustBool() || version == "Dev" {
 		return
 	}
 
@@ -289,6 +289,6 @@ func CheckUpdate(version string) {
 
 	if latestTag != version {
 		utils.PrintInfo("New version available: v" + latestTag + " (currently on: v" + version + ")")
-		utils.PrintInfo(`Run "spicetify update" or use a package manager to update spicetify`)
+		utils.PrintInfo(`Run "skidify update" or use a package manager to update skidify`)
 	}
 }

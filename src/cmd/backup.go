@@ -4,21 +4,21 @@ import (
 	"fmt"
 	"os"
 
-	spotifystatus "github.com/spicetify/cli/src/status/spotify"
+	spotifystatus "github.com/skidify/cli/src/status/spotify"
 
-	"github.com/spicetify/cli/src/backup"
-	"github.com/spicetify/cli/src/preprocess"
-	backupstatus "github.com/spicetify/cli/src/status/backup"
-	"github.com/spicetify/cli/src/utils"
+	"github.com/skidify/cli/src/backup"
+	"github.com/skidify/cli/src/preprocess"
+	backupstatus "github.com/skidify/cli/src/status/backup"
+	"github.com/skidify/cli/src/utils"
 )
 
 // Backup stores original apps packages, extracts them and preprocesses extracted apps' assets
 // If silent is true, the final readiness message is suppressed (useful when chaining with "apply")
-func Backup(spicetifyVersion string, silent bool) {
+func Backup(skidifyVersion string, silent bool) {
 	if isAppX {
 		utils.PrintInfo(`You are using the Microsoft Store version of Spotify, which is only partly supported.
-Don't use the Microsoft Store version with Spicetify unless you absolutely CANNOT install Spotify from its installer.
-Modded Spotify cannot be launched using original Shortcut/Start menu tile. To correctly launch modified Spotify, make a desktop shortcut that executes "spicetify auto". After that, you can change its icon, pin it to the start menu or put it in the startup folder.`)
+Don't use the Microsoft Store version with skidify unless you absolutely CANNOT install Spotify from its installer.
+Modded Spotify cannot be launched using original Shortcut/Start menu tile. To correctly launch modified Spotify, make a desktop shortcut that executes "skidify auto". After that, you can change its icon, pin it to the start menu or put it in the startup folder.`)
 		if !ReadAnswer("Continue backing up anyway?", false, true) {
 			os.Exit(1)
 		}
@@ -33,7 +33,7 @@ Modded Spotify cannot be launched using original Shortcut/Start menu tile. To co
 			clearBackup()
 		} else {
 			utils.PrintWarning(`After clearing backup, Spotify cannot be backed up again`)
-			utils.PrintInfo(`Please restore first then backup, run "spicetify restore backup" or re-install Spotify then run "spicetify backup"`)
+			utils.PrintInfo(`Please restore first then backup, run "skidify restore backup" or re-install Spotify then run "skidify backup"`)
 			os.Exit(1)
 		}
 	}
@@ -69,7 +69,7 @@ Modded Spotify cannot be launched using original Shortcut/Start menu tile. To co
 		utils.PrintError("Spotify installation path not found. Cannot preprocess V8 snapshots")
 	} else {
 		preprocess.Start(
-			spicetifyVersion,
+			skidifyVersion,
 			spotifyBasePath,
 			rawFolder,
 			preprocess.Flag{
@@ -90,7 +90,7 @@ Modded Spotify cannot be launched using original Shortcut/Start menu tile. To co
 	preprocess.StartCSS(themedFolder)
 
 	backupSection.Key("version").SetValue(utils.GetSpotifyVersion(prefsPath))
-	backupSection.Key("with").SetValue(spicetifyVersion)
+	backupSection.Key("with").SetValue(skidifyVersion)
 	if err := cfg.Write(); err != nil {
 		utils.PrintWarning(fmt.Sprintf("Failed to save config: %s", err.Error()))
 	}
@@ -152,7 +152,7 @@ func clearBackup() {
 	spinner.Success("Cleared current backup")
 }
 
-// Restore uses backup to revert every changes made by Spicetify.
+// Restore uses backup to revert every changes made by skidify.
 func Restore() {
 	CheckStates()
 	spinner, _ := utils.Spinner.Start("Restoring Spotify")

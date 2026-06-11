@@ -7,7 +7,7 @@
 	let isFallback = false;
 
 	try {
-		overrideList = JSON.parse(localStorage.getItem("spicetify-exp-features"));
+		overrideList = JSON.parse(localStorage.getItem("skidify-exp-features"));
 		if (!overrideList || overrideList !== Object(overrideList)) throw "";
 		prevSessionOverrideList = Object.keys(overrideList);
 	} catch {
@@ -15,7 +15,7 @@
 		prevSessionOverrideList = [];
 	}
 
-	Spicetify.expFeatureOverride = (feature) => {
+	skidify.expFeatureOverride = (feature) => {
 		hooksPatched = true;
 		newFeatures.push(feature.name);
 
@@ -38,40 +38,40 @@
 				break;
 		}
 
-		localStorage.setItem("spicetify-exp-features", JSON.stringify(overrideList));
+		localStorage.setItem("skidify-exp-features", JSON.stringify(overrideList));
 		return feature;
 	};
 
 	const content = document.createElement("div");
-	content.classList.add("spicetify-exp-features");
+	content.classList.add("skidify-exp-features");
 	const style = document.createElement("style");
 	style.innerHTML = `
-.spicetify-exp-features .col {
+.skidify-exp-features .col {
     padding: 0;
 }
-.spicetify-exp-features .setting-row::after {
+.skidify-exp-features .setting-row::after {
     content: "";
     display: table;
     clear: both;
 }
-.spicetify-exp-features .setting-row {
+.skidify-exp-features .setting-row {
     display: flex;
     padding: 10px 0;
     align-items: center;
 }
-.spicetify-exp-features .setting-row .col.description {
+.skidify-exp-features .setting-row .col.description {
     float: left;
     padding-right: 15px;
     width: 100%;
 }
-.spicetify-exp-features .setting-row .col.action {
+.skidify-exp-features .setting-row .col.action {
     float: right;
     text-align: right;
 }
-.spicetify-exp-features .setting-row .col.action .dropdown {
+.skidify-exp-features .setting-row .col.action .dropdown {
 	width: max-content;
 }
-.spicetify-exp-features button.switch {
+.skidify-exp-features button.switch {
     align-items: center;
     border: 0px;
     border-radius: 50%;
@@ -82,11 +82,11 @@
     margin-inline-start: 12px;
     padding: 8px;
 }
-.spicetify-exp-features button.switch.disabled,
-.spicetify-exp-features button.switch[disabled] {
+.skidify-exp-features button.switch.disabled,
+.skidify-exp-features button.switch[disabled] {
     color: rgba(var(--spice-rgb-text), .3);
 }
-.spicetify-exp-features button.reset {
+.skidify-exp-features button.reset {
 	font-weight: 700;
 	font-size: medium;
 	background-color: transparent;
@@ -99,22 +99,22 @@
 	min-block-size: 32px;
 	cursor: pointer;
 }
-.spicetify-exp-features button.reset:hover {
+.skidify-exp-features button.reset:hover {
 	transform: scale(1.04);
 	border-color: var(--spice-text);
 }
-.spicetify-exp-features .search-container {
+.skidify-exp-features .search-container {
     width: 100%;
 }
-.spicetify-exp-features .setting-row#search .col.action {
+.skidify-exp-features .setting-row#search .col.action {
     position: relative;
     width: 100%;
 }
-.spicetify-exp-features .setting-row#search svg {
+.skidify-exp-features .setting-row#search svg {
     position: absolute;
     margin: 12px;
 }
-.spicetify-exp-features input.search {
+.skidify-exp-features input.search {
     border-style: solid;
     border-color: var(--spice-sidebar);
     background-color: var(--spice-sidebar);
@@ -132,18 +132,18 @@
 
 	(function waitForRemoteConfigResolver() {
 		// Don't show options if hooks aren't patched/loaded
-		if (!hooksPatched || (!Spicetify.RemoteConfigResolver && !Spicetify.Platform?.RemoteConfigDebugAPI && !Spicetify.Platform?.RemoteConfiguration)) {
+		if (!hooksPatched || (!skidify.RemoteConfigResolver && !skidify.Platform?.RemoteConfigDebugAPI && !skidify.Platform?.RemoteConfiguration)) {
 			setTimeout(waitForRemoteConfigResolver, 500);
 			return;
 		}
 
-		let remoteConfiguration = Spicetify.RemoteConfigResolver?.value.remoteConfiguration || Spicetify.Platform?.RemoteConfiguration;
+		let remoteConfiguration = skidify.RemoteConfigResolver?.value.remoteConfiguration || skidify.Platform?.RemoteConfiguration;
 		const setOverrides = async (overrides) => {
-			if (Spicetify.Platform?.RemoteConfigDebugAPI) {
+			if (skidify.Platform?.RemoteConfigDebugAPI) {
 				for (const [name, value] of Object.entries(overrides)) {
 					const feature = overrideList[name];
 					const type = feature.values ? "enum" : typeof value === "number" ? "number" : "boolean";
-					await Spicetify.Platform.RemoteConfigDebugAPI.setOverride(
+					await skidify.Platform.RemoteConfigDebugAPI.setOverride(
 						{
 							source: "web",
 							type,
@@ -152,13 +152,13 @@
 						value
 					);
 				}
-			} else if (Spicetify.RemoteConfigResolver?.value?.setOverrides) {
-				Spicetify.RemoteConfigResolver.value.setOverrides(Spicetify.createInternalMap?.(overrides));
+			} else if (skidify.RemoteConfigResolver?.value?.setOverrides) {
+				skidify.RemoteConfigResolver.value.setOverrides(skidify.createInternalMap?.(overrides));
 			}
 		};
 
 		(async function waitForResolver() {
-			if (!Spicetify.RemoteConfigResolver && !Spicetify.Platform?.RemoteConfigDebugAPI) {
+			if (!skidify.RemoteConfigResolver && !skidify.Platform?.RemoteConfigDebugAPI) {
 				isFallback = true;
 				notice.innerText = "⚠️ Using fallback mode. Some features may not work.";
 				setTimeout(waitForResolver, 500);
@@ -167,19 +167,19 @@
 			isFallback = false;
 			notice.remove();
 			remoteConfiguration =
-				Spicetify?.RemoteConfigResolver?.value.remoteConfiguration ?? (await Spicetify.Platform?.RemoteConfigDebugAPI.getProperties());
+				skidify?.RemoteConfigResolver?.value.remoteConfiguration ?? (await skidify.Platform?.RemoteConfigDebugAPI.getProperties());
 		})();
 
 		for (const key of Object.keys(overrideList)) {
 			if (newFeatures.includes(key)) continue;
 			delete overrideList[key];
-			console.warn(`[spicetify-exp-features] Removed ${key} from override list`);
-			localStorage.setItem("spicetify-exp-features", JSON.stringify(overrideList));
+			console.warn(`[skidify-exp-features] Removed ${key} from override list`);
+			localStorage.setItem("skidify-exp-features", JSON.stringify(overrideList));
 		}
 
 		function changeValue(name, value) {
 			overrideList[name].value = value;
-			localStorage.setItem("spicetify-exp-features", JSON.stringify(overrideList));
+			localStorage.setItem("skidify-exp-features", JSON.stringify(overrideList));
 
 			featureMap[name] = value;
 			setOverrides({ [name]: value });
@@ -193,7 +193,7 @@
 <label class="col description">${desc}</label>
 <div class="col action"><button class="switch">
     <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-        ${Spicetify.SVGIcons.check}
+        ${skidify.SVGIcons.check}
     </svg>
 </button></div>`;
 
@@ -237,7 +237,7 @@
 <div class="col action">
 <div class="search-container">
 <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-${Spicetify.SVGIcons.search}
+${skidify.SVGIcons.search}
 </svg>
 <input type="text" class="search" placeholder="Search for a feature">
 </div>
@@ -263,7 +263,7 @@ ${Spicetify.SVGIcons.search}
 					</div>`;
 		const resetBtn = resetButton.querySelector("button.reset");
 		resetBtn.onclick = () => {
-			localStorage.removeItem("spicetify-exp-features");
+			localStorage.removeItem("skidify-exp-features");
 			window.location.reload();
 		};
 
@@ -273,7 +273,7 @@ ${Spicetify.SVGIcons.search}
 			if (!prevSessionOverrideList.includes(name) && remoteConfiguration.values.has(name)) {
 				const currentValue = remoteConfiguration.values.get(name);
 				overrideList[name].value = currentValue;
-				localStorage.setItem("spicetify-exp-features", JSON.stringify(overrideList));
+				localStorage.setItem("skidify-exp-features", JSON.stringify(overrideList));
 
 				featureMap[name] = currentValue;
 				setOverrides({ [name]: currentValue });
@@ -292,13 +292,13 @@ ${Spicetify.SVGIcons.search}
 		content.appendChild(resetButton);
 	})();
 
-	await new Promise((res) => Spicetify.Events.webpackLoaded.on(res));
+	await new Promise((res) => skidify.Events.webpackLoaded.on(res));
 
-	new Spicetify.Menu.Item(
+	new skidify.Menu.Item(
 		"Experimental features",
 		false,
 		() => {
-			Spicetify.PopupModal.display({
+			skidify.PopupModal.display({
 				title: "Experimental features",
 				content,
 				isLarge: true,

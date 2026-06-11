@@ -5,7 +5,7 @@
 /// <reference path="../globals.d.ts" />
 
 (function WebNowPlaying() {
-	if (!Spicetify.CosmosAsync || !Spicetify.Platform.LibraryAPI) {
+	if (!skidify.CosmosAsync || !skidify.Platform.LibraryAPI) {
 		setTimeout(WebNowPlaying, 500);
 		return;
 	}
@@ -25,7 +25,7 @@ class WNPReduxWebSocket {
 	connectionTimeout = null;
 	reconnectTimeout = null;
 	isClosed = false;
-	spicetifyInfo = {
+	skidifyInfo = {
 		player: "Spotify Desktop",
 		state: "STOPPED",
 		title: "",
@@ -44,34 +44,34 @@ class WNPReduxWebSocket {
 	constructor() {
 		this.init();
 
-		Spicetify.Player.addEventListener("songchange", ({ data }) => this.updateSpicetifyInfo(data));
-		Spicetify.Player.addEventListener("onplaypause", ({ data }) => this.updateSpicetifyInfo(data));
+		skidify.Player.addEventListener("songchange", ({ data }) => this.updateskidifyInfo(data));
+		skidify.Player.addEventListener("onplaypause", ({ data }) => this.updateskidifyInfo(data));
 	}
 
-	updateSpicetifyInfo(data) {
+	updateskidifyInfo(data) {
 		if (!data?.item?.metadata) return;
 		const meta = data.item.metadata;
-		this.spicetifyInfo.title = meta.title;
-		this.spicetifyInfo.album = meta.album_title;
-		this.spicetifyInfo.duration = timeInSecondsToString(Math.round(Number.parseInt(meta.duration) / 1000));
-		this.spicetifyInfo.state = !data.isPaused ? "PLAYING" : "PAUSED";
-		this.spicetifyInfo.repeat = data.repeat === 2 ? "ONE" : data.repeat === 1 ? "ALL" : "NONE";
-		this.spicetifyInfo.shuffle = data.shuffle;
-		this.spicetifyInfo.artist = meta.artist_name;
+		this.skidifyInfo.title = meta.title;
+		this.skidifyInfo.album = meta.album_title;
+		this.skidifyInfo.duration = timeInSecondsToString(Math.round(Number.parseInt(meta.duration) / 1000));
+		this.skidifyInfo.state = !data.isPaused ? "PLAYING" : "PAUSED";
+		this.skidifyInfo.repeat = data.repeat === 2 ? "ONE" : data.repeat === 1 ? "ALL" : "NONE";
+		this.skidifyInfo.shuffle = data.shuffle;
+		this.skidifyInfo.artist = meta.artist_name;
 		let artistCount = 1;
 		while (meta[`artist_name:${artistCount}`]) {
-			this.spicetifyInfo.artist += `, ${meta[`artist_name:${artistCount}`]}`;
+			this.skidifyInfo.artist += `, ${meta[`artist_name:${artistCount}`]}`;
 			artistCount++;
 		}
-		if (!this.spicetifyInfo.artist) this.spicetifyInfo.artist = meta.album_title; // Podcast
+		if (!this.skidifyInfo.artist) this.skidifyInfo.artist = meta.album_title; // Podcast
 
-		Spicetify.Platform.LibraryAPI.contains(data.item.uri).then(([added]) => {
-			this.spicetifyInfo.rating = added ? 5 : 0;
+		skidify.Platform.LibraryAPI.contains(data.item.uri).then(([added]) => {
+			this.skidifyInfo.rating = added ? 5 : 0;
 		});
 
 		const cover = meta.image_xlarge_url;
-		if (cover?.indexOf("localfile") === -1) this.spicetifyInfo.cover = `https://i.scdn.co/image/${cover.substring(cover.lastIndexOf(":") + 1)}`;
-		else this.spicetifyInfo.cover = "";
+		if (cover?.indexOf("localfile") === -1) this.skidifyInfo.cover = `https://i.scdn.co/image/${cover.substring(cover.lastIndexOf(":") + 1)}`;
+		else this.skidifyInfo.cover = "";
 	}
 
 	init() {
@@ -146,8 +146,8 @@ class WNPReduxWebSocket {
 			}
 
 			// Sending an update immediately would normally do nothing, as it takes some time for
-			// spicetifyInfo to be updated via the Cosmos subscription. However, we try to
-			// optimistically update spicetifyInfo after receiving events.
+			// skidifyInfo to be updated via the Cosmos subscription. However, we try to
+			// optimistically update skidifyInfo after receiving events.
 			this.sendUpdate();
 		} else {
 			if (event.data.startsWith("Version:")) {
@@ -177,75 +177,75 @@ class WNPReduxWebSocket {
 }
 
 function OnMessageLegacy(self, message) {
-	// Quite lengthy functions because we optimistically update spicetifyInfo after receiving events.
+	// Quite lengthy functions because we optimistically update skidifyInfo after receiving events.
 	try {
 		const [type, data] = message.toUpperCase().split(" ");
 		switch (type) {
 			case "PLAYPAUSE": {
-				Spicetify.Player.togglePlay();
-				self.spicetifyInfo.state = self.spicetifyInfo.state === "PLAYING" ? "PAUSED" : "PLAYING";
+				skidify.Player.togglePlay();
+				self.skidifyInfo.state = self.skidifyInfo.state === "PLAYING" ? "PAUSED" : "PLAYING";
 				break;
 			}
 			case "NEXT":
-				Spicetify.Player.next();
+				skidify.Player.next();
 				break;
 			case "PREVIOUS":
-				Spicetify.Player.back();
+				skidify.Player.back();
 				break;
 			case "SETPOSITION": {
 				// Example string: SetPosition 34:SetProgress 0,100890207715134:
 				const [, positionPercentage] = message.toUpperCase().split(":")[1].split("SETPROGRESS ");
-				Spicetify.Player.seek(Number.parseFloat(positionPercentage.replace(",", ".")));
+				skidify.Player.seek(Number.parseFloat(positionPercentage.replace(",", ".")));
 				break;
 			}
 			case "SETVOLUME":
-				Spicetify.Player.setVolume(Number.parseInt(data) / 100);
+				skidify.Player.setVolume(Number.parseInt(data) / 100);
 				break;
 			case "REPEAT": {
-				Spicetify.Player.toggleRepeat();
-				self.spicetifyInfo.repeat = self.spicetifyInfo.repeat === "NONE" ? "ALL" : self.spicetifyInfo.repeat === "ALL" ? "ONE" : "NONE";
+				skidify.Player.toggleRepeat();
+				self.skidifyInfo.repeat = self.skidifyInfo.repeat === "NONE" ? "ALL" : self.skidifyInfo.repeat === "ALL" ? "ONE" : "NONE";
 				break;
 			}
 			case "SHUFFLE": {
-				Spicetify.Player.toggleShuffle();
-				self.spicetifyInfo.shuffle = !self.spicetifyInfo.shuffle;
+				skidify.Player.toggleShuffle();
+				self.skidifyInfo.shuffle = !self.skidifyInfo.shuffle;
 				break;
 			}
 			case "TOGGLETHUMBSUP": {
-				Spicetify.Player.toggleHeart();
-				self.spicetifyInfo.rating = self.spicetifyInfo.rating === 5 ? 0 : 5;
+				skidify.Player.toggleHeart();
+				self.skidifyInfo.rating = self.skidifyInfo.rating === 5 ? 0 : 5;
 				break;
 			}
 			// Spotify doesn't have a negative rating
 			// case 'TOGGLETHUMBSDOWN': break
 			case "RATING": {
 				const rating = Number.parseInt(data);
-				const isLiked = self.spicetifyInfo.rating > 3;
-				if (rating >= 3 && !isLiked) Spicetify.Player.toggleHeart();
-				else if (rating < 3 && isLiked) Spicetify.Player.toggleHeart();
-				self.spicetifyInfo.rating = rating;
+				const isLiked = self.skidifyInfo.rating > 3;
+				if (rating >= 3 && !isLiked) skidify.Player.toggleHeart();
+				else if (rating < 3 && isLiked) skidify.Player.toggleHeart();
+				self.skidifyInfo.rating = rating;
 				break;
 			}
 		}
 	} catch (e) {
-		self.send(`Error:Error sending event to ${self.spicetifyInfo.player}`);
+		self.send(`Error:Error sending event to ${self.skidifyInfo.player}`);
 		self.send(`ErrorD:${e}`);
 	}
 }
 
 function SendUpdateLegacy(self) {
-	if (!Spicetify.Player.data && cache.get("state") !== 0) {
+	if (!skidify.Player.data && cache.get("state") !== 0) {
 		cache.set("state", 0);
 		ws.send("STATE:0");
 		return;
 	}
 
-	self.spicetifyInfo.position = timeInSecondsToString(Math.round(Spicetify.Player.getProgress() / 1000));
-	self.spicetifyInfo.volume = Math.round(Spicetify.Player.getVolume() * 100);
+	self.skidifyInfo.position = timeInSecondsToString(Math.round(skidify.Player.getProgress() / 1000));
+	self.skidifyInfo.volume = Math.round(skidify.Player.getVolume() * 100);
 
-	for (const key of Object.keys(self.spicetifyInfo)) {
+	for (const key of Object.keys(self.skidifyInfo)) {
 		try {
-			let value = self.spicetifyInfo[key];
+			let value = self.skidifyInfo[key];
 			// For numbers, round it to an integer
 			if (typeof value === "number") value = Math.round(value);
 
@@ -260,82 +260,82 @@ function SendUpdateLegacy(self) {
 				self.cache.set(key, value);
 			}
 		} catch (e) {
-			self.send(`Error: Error updating ${key} for ${self.spicetifyInfo.player}`);
+			self.send(`Error: Error updating ${key} for ${self.skidifyInfo.player}`);
 			self.send(`ErrorD:${e}`);
 		}
 	}
 }
 
 function OnMessageRev1(self, message) {
-	// Quite lengthy functions because we optimistically update spicetifyInfo after receiving events.
+	// Quite lengthy functions because we optimistically update skidifyInfo after receiving events.
 	const [type, data] = message.split(" ");
 
 	try {
 		switch (type) {
 			case "TOGGLE_PLAYING": {
-				Spicetify.Player.togglePlay();
-				self.spicetifyInfo.state = self.spicetifyInfo.state === "PLAYING" ? "PAUSED" : "PLAYING";
+				skidify.Player.togglePlay();
+				self.skidifyInfo.state = self.skidifyInfo.state === "PLAYING" ? "PAUSED" : "PLAYING";
 				break;
 			}
 			case "NEXT":
-				Spicetify.Player.next();
+				skidify.Player.next();
 				break;
 			case "PREVIOUS":
-				Spicetify.Player.back();
+				skidify.Player.back();
 				break;
 			case "SET_POSITION": {
 				const [, positionPercentage] = data.split(":");
-				Spicetify.Player.seek(Number.parseFloat(positionPercentage.replace(",", ".")));
+				skidify.Player.seek(Number.parseFloat(positionPercentage.replace(",", ".")));
 				break;
 			}
 			case "SET_VOLUME":
-				Spicetify.Player.setVolume(Number.parseInt(data) / 100);
+				skidify.Player.setVolume(Number.parseInt(data) / 100);
 				break;
 			case "TOGGLE_REPEAT": {
-				Spicetify.Player.toggleRepeat();
-				self.spicetifyInfo.repeat = self.spicetifyInfo.repeat === "NONE" ? "ALL" : self.spicetifyInfo.repeat === "ALL" ? "ONE" : "NONE";
+				skidify.Player.toggleRepeat();
+				self.skidifyInfo.repeat = self.skidifyInfo.repeat === "NONE" ? "ALL" : self.skidifyInfo.repeat === "ALL" ? "ONE" : "NONE";
 				break;
 			}
 			case "TOGGLE_SHUFFLE": {
-				Spicetify.Player.toggleShuffle();
-				self.spicetifyInfo.shuffle = !self.spicetifyInfo.shuffle;
+				skidify.Player.toggleShuffle();
+				self.skidifyInfo.shuffle = !self.skidifyInfo.shuffle;
 				break;
 			}
 			case "TOGGLE_THUMBS_UP": {
-				Spicetify.Player.toggleHeart();
-				self.spicetifyInfo.rating = self.spicetifyInfo.rating === 5 ? 0 : 5;
+				skidify.Player.toggleHeart();
+				self.skidifyInfo.rating = self.skidifyInfo.rating === 5 ? 0 : 5;
 				break;
 			}
 			// Spotify doesn't have a negative rating
 			// case 'TOGGLE_THUMBS_DOWN': break
 			case "SET_RATING": {
 				const rating = Number.parseInt(data);
-				const isLiked = self.spicetifyInfo.rating > 3;
-				if (rating >= 3 && !isLiked) Spicetify.Player.toggleHeart();
-				else if (rating < 3 && isLiked) Spicetify.Player.toggleHeart();
-				self.spicetifyInfo.rating = rating;
+				const isLiked = self.skidifyInfo.rating > 3;
+				if (rating >= 3 && !isLiked) skidify.Player.toggleHeart();
+				else if (rating < 3 && isLiked) skidify.Player.toggleHeart();
+				self.skidifyInfo.rating = rating;
 				break;
 			}
 		}
 	} catch (e) {
-		self.send(`ERROR Error sending event to ${self.spicetifyInfo.player}`);
+		self.send(`ERROR Error sending event to ${self.skidifyInfo.player}`);
 		self.send(`ERRORDEBUG ${e}`);
 	}
 }
 
 function SendUpdateRev1(self) {
-	if (!Spicetify.Player.data && cache.get("state") !== "STOPPED") {
+	if (!skidify.Player.data && cache.get("state") !== "STOPPED") {
 		cache.set("state", "STOPPED");
 		ws.send("STATE STOPPED");
 		return;
 	}
 
-	self.spicetifyInfo.position = timeInSecondsToString(Math.round(Spicetify.Player.getProgress() / 1000));
-	self.spicetifyInfo.volume = Math.round(Spicetify.Player.getVolume() * 100);
+	self.skidifyInfo.position = timeInSecondsToString(Math.round(skidify.Player.getProgress() / 1000));
+	self.skidifyInfo.volume = Math.round(skidify.Player.getVolume() * 100);
 
-	for (const key of Object.keys(self.spicetifyInfo)) {
+	for (const key of Object.keys(self.skidifyInfo)) {
 		try {
-			let value = self.spicetifyInfo[key];
+			let value = self.skidifyInfo[key];
 			// For numbers, round it to an integer
 			if (typeof value === "number") value = Math.round(value);
 			// Check for null, and not just falsy, because 0 and '' are falsy
@@ -344,7 +344,7 @@ function SendUpdateRev1(self) {
 				self.cache.set(key, value);
 			}
 		} catch (e) {
-			self.send(`ERROR Error updating ${key} for ${self.spicetifyInfo.player}`);
+			self.send(`ERROR Error updating ${key} for ${self.skidifyInfo.player}`);
 			self.send(`ERRORDEBUG ${e}`);
 		}
 	}

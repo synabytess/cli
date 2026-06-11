@@ -10,7 +10,7 @@ const ProviderNetease = (() => {
 		const cleanTitle = Utils.removeExtraInfo(Utils.removeSongFeat(Utils.normalize(info.title)));
 		const finalURL = searchURL + encodeURIComponent(`${cleanTitle} ${info.artist}`);
 
-		const searchResults = await Spicetify.CosmosAsync.get(finalURL, null, requestHeader);
+		const searchResults = await skidify.CosmosAsync.get(finalURL, null, requestHeader);
 		const items = searchResults.result.songs;
 		if (!items?.length) {
 			throw "Cannot find track";
@@ -24,7 +24,7 @@ const ProviderNetease = (() => {
 		if (itemId === -1) itemId = items.findIndex((val) => val.name === cleanTitle);
 		if (itemId === -1) throw "Cannot find track";
 
-		return await Spicetify.CosmosAsync.get(lyricURL + items[itemId].id, null, requestHeader);
+		return await skidify.CosmosAsync.get(lyricURL + items[itemId].id, null, requestHeader);
 	}
 
 	const creditInfo = [

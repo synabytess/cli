@@ -1,4 +1,4 @@
-module github.com/spicetify/cli
+module github.com/skidify/cli
 
 go 1.24.2
 

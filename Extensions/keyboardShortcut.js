@@ -5,7 +5,7 @@
 /// <reference path="../globals.d.ts" />
 
 (function KeyboardShortcut() {
-	if (!Spicetify.Mousetrap) {
+	if (!skidify.Mousetrap) {
 		setTimeout(KeyboardShortcut, 1000);
 		return;
 	}
@@ -24,8 +24,8 @@
 		// Shutdown Spotify using Ctrl+Q
 		"ctrl+q": {
 			callback: () =>
-				Spicetify.CosmosAsync.post("sp://esperanto/spotify.desktop.lifecycle_esperanto.proto.DesktopLifecycle/Shutdown") &&
-				Spicetify.CosmosAsync.post("sp://desktop/v1/shutdown"),
+				skidify.CosmosAsync.post("sp://esperanto/spotify.desktop.lifecycle_esperanto.proto.DesktopLifecycle/Shutdown") &&
+				skidify.CosmosAsync.post("sp://desktop/v1/shutdown"),
 		},
 
 		// Rotate through sidebar items using Ctrl+Tab and Ctrl+Shift+Tab
@@ -45,22 +45,22 @@
 		"shift+g": { callback: () => scrollToPosition(1) },
 
 		// Shift + H and Shift + L to go back and forward page
-		"shift+h": { callback: () => Spicetify.Platform.History.goBack() },
-		"shift+l": { callback: () => Spicetify.Platform.History.goForward() },
+		"shift+h": { callback: () => skidify.Platform.History.goBack() },
+		"shift+l": { callback: () => skidify.Platform.History.goForward() },
 
 		// M to Like/Unlike track
-		m: { callback: () => Spicetify.Player.toggleHeart() },
+		m: { callback: () => skidify.Player.toggleHeart() },
 
 		// Forward Slash to open search page
-		"/": { callback: () => Spicetify.Platform.History.replace("/search") },
+		"/": { callback: () => skidify.Platform.History.replace("/search") },
 
 		// CTRL + Arrow Left Next and CTRL + Arrow Right  Previous Song
-		"ctrl+left": { callback: () => Spicetify.Player.back() },
-		"ctrl+right": { callback: () => Spicetify.Player.next() },
+		"ctrl+left": { callback: () => skidify.Player.back() },
+		"ctrl+right": { callback: () => skidify.Player.next() },
 
 		// CTRL + Arrow Up Increase Volume CTRL + Arrow Down Decrease Volume
-		"ctrl+up": { callback: () => Spicetify.Player.setVolume(Spicetify.Player.getVolume() + 0.05) },
-		"ctrl+down": { callback: () => Spicetify.Player.setVolume(Spicetify.Player.getVolume() - 0.05) },
+		"ctrl+up": { callback: () => skidify.Player.setVolume(skidify.Player.getVolume() + 0.05) },
+		"ctrl+down": { callback: () => skidify.Player.setVolume(skidify.Player.getVolume() - 0.05) },
 
 		// Activate Vim mode and set cancel key to 'ESCAPE'
 		f: {
@@ -74,7 +74,7 @@
 	// Bind all the keys
 	for (const [key, { staticCondition, callback }] of Object.entries(binds)) {
 		if (typeof staticCondition === "undefined" || staticCondition) {
-			Spicetify.Mousetrap.bind(key, (event) => {
+			skidify.Mousetrap.bind(key, (event) => {
 				event.preventDefault();
 				if (!vim.isActive) {
 					callback(event);
@@ -134,7 +134,7 @@
 	 */
 	function findActiveIndex(allItems) {
 		const activeLink = document.querySelector(".main-yourLibraryX-navLinkActive");
-		const historyURI = Spicetify.Platform.History.location.pathname.replace(/^\//, "spotify:").replace(/\//g, ":");
+		const historyURI = skidify.Platform.History.location.pathname.replace(/^\//, "spotify:").replace(/\//g, ":");
 		const activePage = document.querySelector(`[aria-describedby="onClickHint${historyURI}"]`);
 
 		if (!activeLink && !activePage) {
@@ -157,7 +157,7 @@
 	 */
 	function rotateSidebar(direction) {
 		const allItems = document.querySelectorAll(
-			"#spicetify-sticky-list .main-yourLibraryX-navLink, .main-yourLibraryX-listItem > div:not(:has([data-skip-in-keyboard-nav])) > div:first-child"
+			"#skidify-sticky-list .main-yourLibraryX-navLink, .main-yourLibraryX-listItem > div:not(:has([data-skip-in-keyboard-nav])) > div:first-child"
 		);
 		const maxIndex = allItems.length - 1;
 
@@ -208,7 +208,7 @@ function VimBind() {
 	vimOverlay.append(tippyOverlay);
 	document.body.append(vimOverlay);
 
-	const mousetrap = new Spicetify.Mousetrap(document);
+	const mousetrap = new skidify.Mousetrap(document);
 	mousetrap.bind(keyList, listenToKeys.bind(this), "keypress");
 	// Pause mousetrap event emitter
 	const orgStopCallback = mousetrap.stopCallback;
@@ -387,10 +387,10 @@ function VimBind() {
 
 	/**
 	 *
-	 * @param {Spicetify.Keyboard.ValidKey} key
+	 * @param {skidify.Keyboard.ValidKey} key
 	 */
 	this.setCancelKey = function (key) {
-		mousetrap.bind(Spicetify.Keyboard.KEYS[key], this.deactivate.bind(this));
+		mousetrap.bind(skidify.Keyboard.KEYS[key], this.deactivate.bind(this));
 	};
 
 	return this;

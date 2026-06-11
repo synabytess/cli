@@ -8,7 +8,7 @@
 	const skipBackBtn =
 		document.querySelector(".main-skipBackButton-button") ??
 		document.querySelector(".player-controls__left > button[data-encore-id='buttonTertiary']");
-	if (!Spicetify.Player.data || !Spicetify.LocalStorage || !skipBackBtn) {
+	if (!skidify.Player.data || !skidify.LocalStorage || !skipBackBtn) {
 		setTimeout(TrashBin, 1000);
 		return;
 	}
@@ -33,7 +33,7 @@
 			<label class="col description">${desc}</label>
 			<div class="col action"><button class="switch">
 			<svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-			${Spicetify.SVGIcons.check}
+			${skidify.SVGIcons.check}
 			</svg>
 			</button></div>
 		`;
@@ -44,7 +44,7 @@
 		slider.onclick = () => {
 			const state = slider.classList.contains("disabled");
 			slider.classList.toggle("disabled");
-			Spicetify.LocalStorage.set(name, state);
+			skidify.LocalStorage.set(name, state);
 			console.log(name, state);
 			callback(state);
 		};
@@ -80,7 +80,7 @@
 				trashArtistList = {};
 				setWidgetState(false);
 				putDataLocal();
-				Spicetify.showNotification("Trashbin cleared!");
+				skidify.showNotification("Trashbin cleared!");
 			})
 		);
 	}
@@ -150,7 +150,7 @@
 
 	function initValue(item, defaultValue) {
 		try {
-			const value = JSON.parse(Spicetify.LocalStorage.get(item));
+			const value = JSON.parse(skidify.LocalStorage.get(item));
 			return value ?? defaultValue;
 		} catch {
 			return defaultValue;
@@ -172,11 +172,11 @@
 	const THROW_TEXT = "Place in Trashbin";
 	const UNTHROW_TEXT = "Remove from Trashbin";
 
-	new Spicetify.Menu.Item(
+	new skidify.Menu.Item(
 		"Trashbin",
 		false,
 		() => {
-			Spicetify.PopupModal.display({
+			skidify.PopupModal.display({
 				title: "Trashbin Settings",
 				content,
 			});
@@ -184,22 +184,22 @@
 		trashbinIcon
 	).register();
 
-	const widget = new Spicetify.Playbar.Widget(
+	const widget = new skidify.Playbar.Widget(
 		THROW_TEXT,
 		trashbinIcon,
 		(self) => {
-			const uri = Spicetify.Player.data.item.uri;
-			const uriObj = Spicetify.URI.fromString(uri);
+			const uri = skidify.Player.data.item.uri;
+			const uriObj = skidify.URI.fromString(uri);
 			const type = uriObj.type;
 
 			if (!trashSongList[uri]) {
 				trashSongList[uri] = true;
-				if (shouldSkipCurrentTrack(uri, type)) Spicetify.Player.next();
-				Spicetify.showNotification("Song added to trashbin");
+				if (shouldSkipCurrentTrack(uri, type)) skidify.Player.next();
+				skidify.showNotification("Song added to trashbin");
 			} else {
 				delete trashSongList[uri];
 				setWidgetState(false);
-				Spicetify.showNotification("Song removed from trashbin");
+				skidify.showNotification("Song removed from trashbin");
 			}
 
 			putDataLocal();
@@ -220,20 +220,20 @@
 	putDataLocal();
 	refreshEventListeners(trashbinStatus);
 	setWidgetState(
-		trashSongList[Spicetify.Player.data.item.uri],
-		Spicetify.URI.fromString(Spicetify.Player.data.item.uri).type !== Spicetify.URI.Type.TRACK
+		trashSongList[skidify.Player.data.item.uri],
+		skidify.URI.fromString(skidify.Player.data.item.uri).type !== skidify.URI.Type.TRACK
 	);
 
 	function refreshEventListeners(state) {
 		trashbinStatus = state;
 		if (state) {
 			skipBackBtn.addEventListener("click", eventListener);
-			Spicetify.Player.addEventListener("songchange", watchChange);
+			skidify.Player.addEventListener("songchange", watchChange);
 			enableWidget && widget.register();
 			watchChange();
 		} else {
 			skipBackBtn.removeEventListener("click", eventListener);
-			Spicetify.Player.removeEventListener("songchange", watchChange);
+			skidify.Player.removeEventListener("songchange", watchChange);
 			widget.deregister();
 		}
 	}
@@ -245,11 +245,11 @@
 	}
 
 	function watchChange() {
-		const data = Spicetify.Player.data || Spicetify.Queue;
+		const data = skidify.Player.data || skidify.Queue;
 		if (!data) return;
 
 		const isBanned = trashSongList[data.item.uri];
-		setWidgetState(isBanned, Spicetify.URI.fromString(data.item.uri).type !== Spicetify.URI.Type.TRACK);
+		setWidgetState(isBanned, skidify.URI.fromString(data.item.uri).type !== skidify.URI.Type.TRACK);
 
 		if (userHitBack) {
 			userHitBack = false;
@@ -257,7 +257,7 @@
 		}
 
 		if (isBanned) {
-			Spicetify.Player.next();
+			skidify.Player.next();
 			return;
 		}
 
@@ -266,7 +266,7 @@
 
 		while (artistUri) {
 			if (trashArtistList[artistUri]) {
-				Spicetify.Player.next();
+				skidify.Player.next();
 				return;
 			}
 
@@ -282,14 +282,14 @@
 	 * @returns {boolean}
 	 */
 	function shouldSkipCurrentTrack(uri, type) {
-		const curTrack = Spicetify.Player.data.item;
-		if (type === Spicetify.URI.Type.TRACK) {
+		const curTrack = skidify.Player.data.item;
+		if (type === skidify.URI.Type.TRACK) {
 			if (uri === curTrack.uri) {
 				return true;
 			}
 		}
 
-		if (type === Spicetify.URI.Type.ARTIST) {
+		if (type === skidify.URI.Type.ARTIST) {
 			let count = 1;
 			let artUri = curTrack.metadata.artist_uri;
 			while (artUri) {
@@ -310,20 +310,20 @@
 	 */
 	function toggleThrow(uris) {
 		const uri = uris[0];
-		const uriObj = Spicetify.URI.fromString(uri);
+		const uriObj = skidify.URI.fromString(uri);
 		const type = uriObj.type;
 
-		const list = type === Spicetify.URI.Type.TRACK ? trashSongList : trashArtistList;
+		const list = type === skidify.URI.Type.TRACK ? trashSongList : trashArtistList;
 
 		if (!list[uri]) {
 			list[uri] = true;
-			if (shouldSkipCurrentTrack(uri, type)) Spicetify.Player.next();
-			Spicetify.Player.data?.item.uri === uri && setWidgetState(true);
-			Spicetify.showNotification(type === Spicetify.URI.Type.TRACK ? "Song added to trashbin" : "Artist added to trashbin");
+			if (shouldSkipCurrentTrack(uri, type)) skidify.Player.next();
+			skidify.Player.data?.item.uri === uri && setWidgetState(true);
+			skidify.showNotification(type === skidify.URI.Type.TRACK ? "Song added to trashbin" : "Artist added to trashbin");
 		} else {
 			delete list[uri];
-			Spicetify.Player.data?.item.uri === uri && setWidgetState(false);
-			Spicetify.showNotification(type === Spicetify.URI.Type.TRACK ? "Song removed from trashbin" : "Artist removed from trashbin");
+			skidify.Player.data?.item.uri === uri && setWidgetState(false);
+			skidify.showNotification(type === skidify.URI.Type.TRACK ? "Song removed from trashbin" : "Artist removed from trashbin");
 		}
 
 		putDataLocal();
@@ -340,13 +340,13 @@
 		}
 
 		const uri = uris[0];
-		const uriObj = Spicetify.URI.fromString(uri);
-		if (uriObj.type === Spicetify.URI.Type.TRACK) {
+		const uriObj = skidify.URI.fromString(uri);
+		if (uriObj.type === skidify.URI.Type.TRACK) {
 			cntxMenu.name = trashSongList[uri] ? UNTHROW_TEXT : THROW_TEXT;
 			return true;
 		}
 
-		if (uriObj.type === Spicetify.URI.Type.ARTIST) {
+		if (uriObj.type === skidify.URI.Type.ARTIST) {
 			cntxMenu.name = trashArtistList[uri] ? UNTHROW_TEXT : THROW_TEXT;
 			return true;
 		}
@@ -354,12 +354,12 @@
 		return false;
 	}
 
-	const cntxMenu = new Spicetify.ContextMenu.Item(THROW_TEXT, toggleThrow, shouldAddContextMenu, trashbinIcon);
+	const cntxMenu = new skidify.ContextMenu.Item(THROW_TEXT, toggleThrow, shouldAddContextMenu, trashbinIcon);
 	cntxMenu.register();
 
 	function putDataLocal() {
-		Spicetify.LocalStorage.set("TrashSongList", JSON.stringify(trashSongList));
-		Spicetify.LocalStorage.set("TrashArtistList", JSON.stringify(trashArtistList));
+		skidify.LocalStorage.set("TrashSongList", JSON.stringify(trashSongList));
+		skidify.LocalStorage.set("TrashArtistList", JSON.stringify(trashArtistList));
 	}
 
 	function copyItems() {
@@ -367,8 +367,8 @@
 			songs: trashSongList,
 			artists: trashArtistList,
 		};
-		Spicetify.Platform.ClipboardAPI.copy(JSON.stringify(data));
-		Spicetify.showNotification("Copied to clipboard");
+		skidify.Platform.ClipboardAPI.copy(JSON.stringify(data));
+		skidify.showNotification("Copied to clipboard");
 	}
 
 	async function exportItems() {
@@ -379,10 +379,10 @@
 
 		try {
 			const handle = await window.showSaveFilePicker({
-				suggestedName: "spicetify-trashbin.json",
+				suggestedName: "skidify-trashbin.json",
 				types: [
 					{
-						description: "Spicetify trashbin backup",
+						description: "skidify trashbin backup",
 						accept: {
 							"application/json": [".json"],
 						},
@@ -394,9 +394,9 @@
 			await writable.write(JSON.stringify(data));
 			await writable.close();
 
-			Spicetify.showNotification("Backup saved succesfully.");
+			skidify.showNotification("Backup saved succesfully.");
 		} catch {
-			Spicetify.showNotification("Failed to save, try copying trashbin contents to clipboard and creating a backup manually.");
+			skidify.showNotification("Failed to save, try copying trashbin contents to clipboard and creating a backup manually.");
 		}
 	}
 
@@ -413,14 +413,14 @@
 					trashSongList = data.songs;
 					trashArtistList = data.artists;
 					putDataLocal();
-					Spicetify.showNotification("File Import Successful!");
+					skidify.showNotification("File Import Successful!");
 				} catch (e) {
-					Spicetify.showNotification("File Import Failed!", true);
+					skidify.showNotification("File Import Failed!", true);
 					console.error(e);
 				}
 			};
 			reader.onerror = () => {
-				Spicetify.showNotification("File Read Failed!", true);
+				skidify.showNotification("File Read Failed!", true);
 				console.error(reader.error);
 			};
 			reader.readAsText(file);

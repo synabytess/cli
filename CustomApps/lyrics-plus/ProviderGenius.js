@@ -20,13 +20,13 @@ const ProviderGenius = (() => {
 	}
 
 	async function getNote(id) {
-		const body = await Spicetify.CosmosAsync.get(`https://genius.com/api/annotations/${id}`);
+		const body = await skidify.CosmosAsync.get(`https://genius.com/api/annotations/${id}`);
 		const response = body.response;
 		let note = "";
 
 		// Authors annotations
 		if (response.referent && response.referent.classification === "verified") {
-			const referentsBody = await Spicetify.CosmosAsync.get(`https://genius.com/api/referents/${id}`);
+			const referentsBody = await skidify.CosmosAsync.get(`https://genius.com/api/referents/${id}`);
 			const referents = referentsBody.response;
 			for (const ref of referents.referent.annotations) {
 				note += getChildDeep(ref.body.dom);
@@ -107,7 +107,7 @@ const ProviderGenius = (() => {
 			const query = new URLSearchParams({ per_page: 20, q: `${info.artist} ${title}` });
 			const url = `https://genius.com/api/search/song?${query.toString()}`;
 
-			const geniusSearch = await Spicetify.CosmosAsync.get(url);
+			const geniusSearch = await skidify.CosmosAsync.get(url);
 
 			hits = geniusSearch.response.sections[0].hits.map((item) => ({
 				title: item.result.full_title,

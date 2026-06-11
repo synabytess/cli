@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/spicetify/cli/src/utils"
+	"github.com/skidify/cli/src/utils"
 )
 
 // Flag enables/disables additional feature
@@ -15,13 +15,13 @@ type Flag struct {
 	CurrentTheme         string
 	ColorScheme          string
 	InjectThemeJS        bool
-	CheckSpicetifyUpdate bool
+	CheckskidifyUpdate bool
 	Extension            []string
 	CustomApp            []string
 	SidebarConfig        bool
 	HomeConfig           bool
 	ExpFeatures          bool
-	SpicetifyVer         string
+	skidifyVer         string
 	SpotifyVer           string
 }
 
@@ -156,7 +156,7 @@ func htmlMod(htmlPath string, flags Flag) {
 		helperHTML += "<script defer src='helper/expFeatures.js'></script>\n"
 	}
 
-	if flags.SpicetifyVer != "" {
+	if flags.skidifyVer != "" {
 		var extList string
 		for _, ext := range flags.Extension {
 			extList += fmt.Sprintf(`"%s",`, ext)
@@ -168,15 +168,15 @@ func htmlMod(htmlPath string, flags Flag) {
 		}
 
 		helperHTML += fmt.Sprintf(`<script>
-			Spicetify.Config={};
-			Spicetify.Config["version"]="%s";
-			Spicetify.Config["current_theme"]="%s";
-			Spicetify.Config["color_scheme"]="%s";
-			Spicetify.Config["extensions"] = [%s];
-			Spicetify.Config["custom_apps"] = [%s];
-			Spicetify.Config["check_spicetify_update"]=%v;
+			skidify.Config={};
+			skidify.Config["version"]="%s";
+			skidify.Config["current_theme"]="%s";
+			skidify.Config["color_scheme"]="%s";
+			skidify.Config["extensions"] = [%s];
+			skidify.Config["custom_apps"] = [%s];
+			skidify.Config["check_skidify_update"]=%v;
 		</script>
-		`, flags.SpicetifyVer, flags.CurrentTheme, flags.ColorScheme, extList, customAppList, flags.CheckSpicetifyUpdate)
+		`, flags.skidifyVer, flags.CurrentTheme, flags.ColorScheme, extList, customAppList, flags.CheckskidifyUpdate)
 	}
 
 	for _, v := range flags.Extension {
@@ -209,7 +209,7 @@ func htmlMod(htmlPath string, flags Flag) {
 			})
 		utils.Replace(
 			&content,
-			`<\!-- spicetify helpers -->`,
+			`<\!-- skidify helpers -->`,
 			func(submatches ...string) string {
 				return fmt.Sprintf("%s%s", submatches[0], helperHTML)
 			})
@@ -299,8 +299,8 @@ func insertCustomApp(jsPath string, flags Flag) {
 			elementPatterns)
 
 		if (len(reactSymbs) < 2) || (len(eleSymbs) == 0) {
-			utils.PrintError("Spotify version mismatch with Spicetify. Please report it on our github repository.")
-			utils.PrintInfo("Spicetify might have been updated for this version already. Please run `spicetify update` to check for a new version.")
+			utils.PrintError("Spotify version mismatch with skidify. Please report it on our github repository.")
+			utils.PrintInfo("skidify might have been updated for this version already. Please run `skidify update` to check for a new version.")
 			utils.PrintInfo("If one isn't available yet, please wait for an update to be released or downgrade Spotify to a supported version.")
 			return content
 		}
@@ -320,17 +320,17 @@ func insertCustomApp(jsPath string, flags Flag) {
 		}
 
 		for index, app := range flags.CustomApp {
-			appName := `spicetify-routes-` + app
+			appName := `skidify-routes-` + app
 			appMap += fmt.Sprintf(`"%s":"%s",`, appName, appName)
 			appNameArray += fmt.Sprintf(`"%s",`, app)
 
 			appReactMap += fmt.Sprintf(
-				`,spicetifyApp%d=%s.lazy((()=>%s.%s("%s").then(%s.bind(%s,"%s"))))`,
+				`,skidifyApp%d=%s.lazy((()=>%s.%s("%s").then(%s.bind(%s,"%s"))))`,
 				index, reactSymbs[0], reactSymbs[1], reactSymbs[2],
 				appName, reactSymbs[1], reactSymbs[1], appName)
 
 			appEleMap += fmt.Sprintf(
-				`%s(%s,{path:"/%s/%s",pathV6:"/%s/*",%s:%s(spicetifyApp%d,{})}),`,
+				`%s(%s,{path:"/%s/%s",pathV6:"/%s/*",%s:%s(skidifyApp%d,{})}),`,
 				eleSymbs[0], eleSymbs[1], app, wildcard, app, eleSymbs[2], eleSymbs[0], index)
 
 			cssEnableMap += fmt.Sprintf(`,"%s":1`, appName)
@@ -389,7 +389,7 @@ func insertNavLink(str string, appNameArray string) string {
 		str = strings.Replace(
 			str,
 			libraryXItemMatch,
-			fmt.Sprintf("%s,Spicetify._renderNavLinks([%s], false)", libraryXItemMatch, appNameArray),
+			fmt.Sprintf("%s,skidify._renderNavLinks([%s], false)", libraryXItemMatch, appNameArray),
 			1)
 	}
 
@@ -407,11 +407,11 @@ func insertNavLink(str string, appNameArray string) string {
 		func(index int, submatches ...string) string {
 			switch index {
 			case 0, 1:
-				return fmt.Sprintf("%s,Spicetify._renderNavLinks([%s], true)]", submatches[1], appNameArray)
+				return fmt.Sprintf("%s,skidify._renderNavLinks([%s], true)]", submatches[1], appNameArray)
 			case 2:
-				return fmt.Sprintf("%s[%s,Spicetify._renderNavLinks([%s], true)].flat()%s", submatches[1], submatches[2], appNameArray, submatches[3])
+				return fmt.Sprintf("%s[%s,skidify._renderNavLinks([%s], true)].flat()%s", submatches[1], submatches[2], appNameArray, submatches[3])
 			case 3:
-				return fmt.Sprintf("%s[%s%s,Spicetify._renderNavLinks([%s], true)].flat()", submatches[1], submatches[2], submatches[3], appNameArray)
+				return fmt.Sprintf("%s[%s%s,skidify._renderNavLinks([%s], true)].flat()", submatches[1], submatches[2], submatches[3], appNameArray)
 			}
 			return ""
 		},
@@ -430,7 +430,7 @@ func insertHomeConfig(jsPath string, flags Flag) {
 			&content,
 			`(createDesktopHomeFeatureActivationShelfEventFactory.*?)([\w\.]+)(\.map)`,
 			func(submatches ...string) string {
-				return fmt.Sprintf("%sSpicetifyHomeConfig.arrange(%s)%s", submatches[1], submatches[2], submatches[3])
+				return fmt.Sprintf("%sskidifyHomeConfig.arrange(%s)%s", submatches[1], submatches[2], submatches[3])
 			})
 
 		// >= 1.2.40
@@ -438,7 +438,7 @@ func insertHomeConfig(jsPath string, flags Flag) {
 			&content,
 			`(&&"HomeShortsSectionData".*?[\],}])([a-zA-Z])(\}\)?\()`,
 			func(submatches ...string) string {
-				return fmt.Sprintf("%sSpicetifyHomeConfig.arrange(%s)%s", submatches[1], submatches[2], submatches[3])
+				return fmt.Sprintf("%sskidifyHomeConfig.arrange(%s)%s", submatches[1], submatches[2], submatches[3])
 			})
 
 		return content
@@ -482,21 +482,21 @@ func insertExpFeatures(jsPath string, flags Flag) {
 			&content,
 			`(function \w+\((\w+)\)\{)(\w+ \w+=\w\.name;if\("internal")`,
 			func(submatches ...string) string {
-				return fmt.Sprintf("%s%s=Spicetify.expFeatureOverride(%s);%s", submatches[1], submatches[2], submatches[2], submatches[3])
+				return fmt.Sprintf("%s%s=skidify.expFeatureOverride(%s);%s", submatches[1], submatches[2], submatches[2], submatches[3])
 			})
 
 		// utils.ReplaceOnce(
 		// 	&content,
 		// 	`(\w+\.fromJSON)(\s*=\s*function\b[^{]*{[^}]*})`,
 		// 	func(submatches ...string) string {
-		// 		return fmt.Sprintf("%s=Spicetify.createInternalMap%s", submatches[1], submatches[2])
+		// 		return fmt.Sprintf("%s=skidify.createInternalMap%s", submatches[1], submatches[2])
 		// 	})
 
 		utils.ReplaceOnce(
 			&content,
 			`(([\w$.]+\.fromJSON)\(\w+\)+;)(return ?[\w{}().,]+[\w$]+\.Provider,)(\{value:\{localConfiguration)`,
 			func(submatches ...string) string {
-				return fmt.Sprintf("%sSpicetify.createInternalMap=%s;%sSpicetify.RemoteConfigResolver=%s", submatches[1], submatches[2], submatches[3], submatches[4])
+				return fmt.Sprintf("%sskidify.createInternalMap=%s;%sskidify.RemoteConfigResolver=%s", submatches[1], submatches[2], submatches[3], submatches[4])
 			})
 
 		return content
@@ -510,10 +510,10 @@ func insertVersionInfo(jsPath string, flags Flag) {
 			`(\w+(?:\(\))?\.createElement|\([\w$\.,]+\))\([\w\."]+,[\w{}():,]+\.containerVersion\}?\),`,
 			func(submatches ...string) string {
 				return fmt.Sprintf(`%s%s("details",{children: [
-					%s("summary",{children: "Spicetify v" + Spicetify.Config.version}),
-					%s("li",{children: "Theme: " + Spicetify.Config.current_theme + (Spicetify.Config.color_scheme && " / ") + Spicetify.Config.color_scheme}),
-					%s("li",{children: "Extensions: " + Spicetify.Config.extensions.join(", ")}),
-					%s("li",{children: "Custom apps: " + Spicetify.Config.custom_apps.join(", ")}),
+					%s("summary",{children: "skidify v" + skidify.Config.version}),
+					%s("li",{children: "Theme: " + skidify.Config.current_theme + (skidify.Config.color_scheme && " / ") + skidify.Config.color_scheme}),
+					%s("li",{children: "Extensions: " + skidify.Config.extensions.join(", ")}),
+					%s("li",{children: "Custom apps: " + skidify.Config.custom_apps.join(", ")}),
 					]}),`, submatches[0], submatches[1], submatches[1], submatches[1], submatches[1], submatches[1])
 			})
 		return content

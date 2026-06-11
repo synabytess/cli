@@ -55,7 +55,7 @@ const ConfigSlider = ({ name, defaultValue, onChange = () => {} }) => {
 				className: "col action",
 			},
 			react.createElement(ButtonSVG, {
-				icon: Spicetify.SVGIcons.check,
+				icon: skidify.SVGIcons.check,
 				active,
 				onClick: toggleState,
 			})
@@ -231,28 +231,28 @@ function openConfig() {
 					when: () => true,
 				},
 				{
-					desc: Spicetify.Locale.get("artist.albums"),
+					desc: skidify.Locale.get("artist.albums"),
 					key: "album",
 					defaultValue: CONFIG.album,
 					type: ConfigSlider,
 					when: () => CONFIG.music,
 				},
 				{
-					desc: Spicetify.Locale.get("artist.singles"),
+					desc: skidify.Locale.get("artist.singles"),
 					key: "single-ep",
 					defaultValue: CONFIG["single-ep"],
 					type: ConfigSlider,
 					when: () => CONFIG.music,
 				},
 				/* {
-					desc: Spicetify.Locale.get("artist.appears-on"),
+					desc: skidify.Locale.get("artist.appears-on"),
 					key: "appears-on",
 					defaultValue: CONFIG["appears-on"],
 					type: ConfigSlider,
 					when: () => CONFIG["music"]
 				}, */
 				{
-					desc: Spicetify.Locale.get("artist.compilations"),
+					desc: skidify.Locale.get("artist.compilations"),
 					key: "compilations",
 					defaultValue: CONFIG.compilations,
 					type: ConfigSlider,
@@ -288,15 +288,15 @@ function openConfig() {
 					className: "col action",
 				},
 				react.createElement(ButtonText, {
-					text: Spicetify.Locale.get("equalizer.reset"),
+					text: skidify.Locale.get("equalizer.reset"),
 					onClick: removeCards.bind(this, null, "reset"),
 				})
 			)
 		)
 	);
 
-	Spicetify.PopupModal.display({
-		title: Spicetify.Locale.get("new_releases"),
+	skidify.PopupModal.display({
+		title: skidify.Locale.get("new_releases"),
 		content: configContainer,
 	});
 }

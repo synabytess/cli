@@ -1,9 +1,9 @@
 const Utils = {
 	addQueueListener(callback) {
-		Spicetify.Player.origin._events.addListener("queue_update", callback);
+		skidify.Player.origin._events.addListener("queue_update", callback);
 	},
 	removeQueueListener(callback) {
-		Spicetify.Player.origin._events.removeListener("queue_update", callback);
+		skidify.Player.origin._events.removeListener("queue_update", callback);
 	},
 	convertIntToRGB(colorInt, div = 1) {
 		const rgb = {
@@ -167,11 +167,11 @@ const Utils = {
 		return data;
 	},
 	rubyTextToOriginalReact(translated, syncedText) {
-		const react = Spicetify.React;
+		const react = skidify.React;
 		return react.createElement("p1", null, [react.createElement("ruby", {}, syncedText, react.createElement("rt", null, translated))]);
 	},
 	rubyTextToReact(s) {
-		const react = Spicetify.React;
+		const react = skidify.React;
 		const rubyElems = s.split("<ruby>");
 		const reactChildren = [];
 
@@ -317,7 +317,7 @@ const Utils = {
 				if (isKaraoke) {
 					if (!lyricContent.endsWith(">")) {
 						// For some reason there are a variety of formats for karaoke lyrics, Wikipedia is also inconsisent in their examples
-						const endTime = lines[i + 1]?.match(syncedTimestamp)?.[1] || this.formatTime(Number(Spicetify.Player.data.item.metadata.duration));
+						const endTime = lines[i + 1]?.match(syncedTimestamp)?.[1] || this.formatTime(Number(skidify.Player.data.item.metadata.duration));
 						lyricContent += `<${endTime}>`;
 					}
 					const karaokeLine = parseKaraokeLine(lyricContent, time);

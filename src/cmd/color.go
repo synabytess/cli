@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-ini/ini"
 	"github.com/pterm/pterm"
-	"github.com/spicetify/cli/src/utils"
+	"github.com/skidify/cli/src/utils"
 )
 
 // EditColor changes one or multiple colors' values
@@ -119,7 +119,7 @@ func DisplayColors() {
 
 func colorChangeSuccess(field, value string) {
 	utils.PrintSuccess(`Color changed: ` + field + ` = ` + value)
-	utils.PrintInfo(`Run "spicetify refresh" to apply new color(s)`)
+	utils.PrintInfo(`Run "skidify refresh" to apply new color(s)`)
 }
 
 func colorPreview(color utils.Color) string {

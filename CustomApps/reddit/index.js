@@ -3,14 +3,14 @@
 /// <reference types="react-dom" />
 
 /** @type {React} */
-const react = Spicetify.React;
+const react = skidify.React;
 /** @type {ReactDOM} */
-const reactDOM = Spicetify.ReactDOM;
+const reactDOM = skidify.ReactDOM;
 const {
 	URI,
 	React: { useState, useEffect, useCallback },
 	Platform: { History },
-} = Spicetify;
+} = skidify;
 
 // Define a function called "render" to specify app entry point
 // This function will be used to mount app to main view.
@@ -56,9 +56,9 @@ let gridUpdateTabs;
 let gridUpdatePostsVisual;
 
 const typesLocale = {
-	album: Spicetify.Locale.get("album"),
-	song: Spicetify.Locale.get("song"),
-	playlist: Spicetify.Locale.get("playlist"),
+	album: skidify.Locale.get("album"),
+	song: skidify.Locale.get("song"),
+	playlist: skidify.Locale.get("playlist"),
 };
 
 class Grid extends react.Component {
@@ -202,7 +202,7 @@ class Grid extends react.Component {
 		gridUpdateTabs = this.updateTabs.bind(this);
 		gridUpdatePostsVisual = this.updatePostsVisual.bind(this);
 
-		this.configButton = new Spicetify.Menu.Item("Reddit config", false, openConfig);
+		this.configButton = new skidify.Menu.Item("Reddit config", false, openConfig);
 		this.configButton.register();
 
 		const viewPort = document.querySelector(this.viewportSelector);
@@ -237,9 +237,9 @@ class Grid extends react.Component {
 	}
 
 	render() {
-		const expFeatures = JSON.parse(localStorage.getItem("spicetify-exp-features") || "{}");
+		const expFeatures = JSON.parse(localStorage.getItem("skidify-exp-features") || "{}");
 		const isGlobalNav = expFeatures?.enableGlobalNavBar?.value !== "control";
-		const version = Spicetify.Platform.version.split(".").map((i) => Number.parseInt(i));
+		const version = skidify.Platform.version.split(".").map((i) => Number.parseInt(i));
 
 		const tabBarMargin = {
 			marginTop: isGlobalNav || (version[0] === 1 && version[1] === 2 && version[2] >= 45) ? "60px" : "0px",
@@ -311,7 +311,7 @@ async function getSubreddit(after = "") {
 
 async function fetchPlaylist(post) {
 	try {
-		const res = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${post.uri}/metadata`, {
+		const res = await skidify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${post.uri}/metadata`, {
 			policy: {
 				name: true,
 				picture: true,
@@ -335,12 +335,12 @@ async function fetchPlaylist(post) {
 }
 
 async function fetchAlbum(post) {
-	const { getAlbum } = Spicetify.GraphQL.Definitions;
+	const { getAlbum } = skidify.GraphQL.Definitions;
 
 	try {
-		const { data } = await Spicetify.GraphQL.Request(getAlbum, {
+		const { data } = await skidify.GraphQL.Request(getAlbum, {
 			uri: post.uri,
-			locale: Spicetify.Locale.getLocale(),
+			locale: skidify.Locale.getLocale(),
 			offset: 0,
 			limit: 10,
 		});
@@ -362,7 +362,7 @@ async function fetchAlbum(post) {
 async function fetchTrack(post) {
 	const arg = post.uri.split(":")[2];
 	try {
-		const metadata = await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks/${arg}`);
+		const metadata = await skidify.CosmosAsync.get(`https://api.spotify.com/v1/tracks/${arg}`);
 		return {
 			type: typesLocale.song,
 			uri: post.uri,

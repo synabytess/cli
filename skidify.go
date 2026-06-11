@@ -14,10 +14,10 @@ import (
 
 	colorable "github.com/mattn/go-colorable"
 	"github.com/pterm/pterm"
-	"github.com/spicetify/cli/src/cmd"
-	spotifystatus "github.com/spicetify/cli/src/status/spotify"
-	"github.com/spicetify/cli/src/utils"
-	"github.com/spicetify/cli/src/utils/isAdmin"
+	"github.com/skidify/cli/src/cmd"
+	spotifystatus "github.com/skidify/cli/src/status/spotify"
+	"github.com/skidify/cli/src/utils"
+	"github.com/skidify/cli/src/utils/isAdmin"
 )
 
 var (
@@ -116,7 +116,7 @@ func init() {
 	}
 
 	if isAdmin.Check(bypassAdminCheck) {
-		utils.PrintError("Spicetify should NOT be run with administrator or root privileges")
+		utils.PrintError("skidify should NOT be run with administrator or root privileges")
 		utils.PrintError("Doing so can cause Spotify to show a black/blank window after applying!")
 		utils.PrintError("This happens because Spotify (running as a normal user) can't access files modified with admin privileges")
 		utils.PrintInfo("If you understand the risks and need to continue, you can use the '--bypass-admin' flag.")
@@ -218,7 +218,7 @@ func main() {
 				} else if commands[0] == "all" {
 					return cmd.AllPaths()
 				} else if commands[0] == "userdata" {
-					return utils.GetSpicetifyFolder(), nil
+					return utils.GetskidifyFolder(), nil
 				}
 				return "", errors.New("invalid option\navailable options: all, userdata")
 			}
@@ -271,13 +271,13 @@ func main() {
 
 	cmd.InitPaths()
 
-	utils.PrintBold("spicetify v" + version)
+	utils.PrintBold("skidify v" + version)
 	if slices.Contains(commands, "upgrade") || slices.Contains(commands, "update") {
 		updateStatus := cmd.Update(version)
 		spotifyPath := filepath.Join(cmd.GetSpotifyPath(), "Apps")
 		ex, err := os.Executable()
 		if err != nil {
-			ex = "spicetify"
+			ex = "skidify"
 		}
 
 		if updateStatus {
@@ -296,7 +296,7 @@ func main() {
 
 		spotStat := spotifystatus.Get(spotifyPath)
 		if spotStat.IsBackupable() {
-			utils.PrintNote("spicetify is up-to-date! If you ran this because spicetify disappeared after Spotify updated, we'll attempt to fix it for you right now.")
+			utils.PrintNote("skidify is up-to-date! If you ran this because skidify disappeared after Spotify updated, we'll attempt to fix it for you right now.")
 			cmd.Backup(version, true)
 			cmd.CheckStates()
 			cmd.InitSetting()
@@ -355,7 +355,7 @@ func main() {
 
 		default:
 			utils.Fatal(errors.New(`Command "` + v + `" not found.
-Run "spicetify -h" for a list of valid commands.`))
+Run "skidify -h" for a list of valid commands.`))
 		}
 	}
 
@@ -365,10 +365,10 @@ Run "spicetify -h" for a list of valid commands.`))
 }
 
 func help() {
-	utils.PrintBold("spicetify v" + version)
+	utils.PrintBold("skidify v" + version)
 	log.Println(utils.Bold("USAGE") + "\n" +
-		"spicetify [-q] [-e] [-a] \x1B[4mcommand\033[0m...\n" +
-		"spicetify {-c | --config} | {-v | --version} | {-h | --help}\n\n" +
+		"skidify [-q] [-e] [-a] \x1B[4mcommand\033[0m...\n" +
+		"skidify {-c | --config} | {-v | --version} | {-h | --help}\n\n" +
 		utils.Bold("DESCRIPTION") + "\n" +
 		"Customize Spotify client UI and functionality\n\n" +
 		utils.Bold("CHAINABLE COMMANDS") + `
@@ -402,16 +402,16 @@ spotify-updates     Block Spotify updates by patching spotify executable.
 
 path                Print path of Spotify's executable, userdata, and more.
                     1. Print executable path:
-                    spicetify path
+                    skidify path
 
                     2. Print userdata path:
-                    spicetify path userdata
+                    skidify path userdata
 
                     3. Print all paths:
-                    spicetify path all
+                    skidify path all
 
                     4. Toggle focus with flags:
-                    spicetify path <flag> <option>
+                    skidify path <flag> <option>
 
                     Available flags and options:
                     "-e" (for extensions),
@@ -427,17 +427,17 @@ path                Print path of Spotify's executable, userdata, and more.
                     options: N/A.
 
 config              1. Print all config fields and values:
-                    spicetify config
+                    skidify config
 
                     2. Print one config field's value:
-                    spicetify config <field>
+                    skidify config <field>
 
                     Example usage:
-                    spicetify config color_scheme
-                    spicetify config custom_apps
+                    skidify config color_scheme
+                    skidify config custom_apps
 
                     3. Change value of one or multiple config fields.
-                    spicetify config <field> <value> [<field> <value> ...]
+                    skidify config <field> <value> [<field> <value> ...]
 
                     "extensions" and "custom_apps" fields are arrays of values,
                     so <value> will be appended to those fields' current value.
@@ -445,34 +445,34 @@ config              1. Print all config fields and values:
 
                     Example usage:
                     - Enable "disable_sentry" preprocess:
-                    spicetify config disable_sentry 1
+                    skidify config disable_sentry 1
                     - Add extension "myFakeExt.js" to current extensions list:
-                    spicetify config extensions myFakeExt.js
+                    skidify config extensions myFakeExt.js
                     - Remove extension "wrongname.js" from extensions list:
-                    spicetify config extensions wrongname.js-
+                    skidify config extensions wrongname.js-
                     - Disable "inject_css" and enable "song_page"
-                    spicetify config inject_css 0 song_page 1
+                    skidify config inject_css 0 song_page 1
 
 color               1. Print all color fields and values.
-                    spicetify color
+                    skidify color
 
                     Color boxes require 24-bit color (True color) supported
                     terminal to show colors correctly.
 
                     2. Change theme's one or multiple color values.
-                    spicetify color <field> <value> [<field> <value> ...]
+                    skidify color <field> <value> [<field> <value> ...]
 
                     <value> can be in hex or decimal (rrr,ggg,bbb) format.
 
                     Example usage:
                     - Change main to ff0000
-                    spicetify color main ff0000
+                    skidify color main ff0000
                     - Change sidebar to 00ff00 and button to 0000ff
-                    spicetify color sidebar 00ff00 button 0000ff
+                    skidify color sidebar 00ff00 button 0000ff
 
 config-dir          Show config directory in file viewer
 
-upgrade|update      Update spicetify to the latest version if an update is available
+upgrade|update      Update skidify to the latest version if an update is available
 
 ` + utils.Bold("FLAGS") + `
 -q, --quiet         Quiet mode (no output).
@@ -500,8 +500,8 @@ upgrade|update      Update spicetify to the latest version if an update is avail
 
 -v, --version       Print version number and quit
 
-For config information, run "spicetify -h config".
-For more information and reporting bugs: https://github.com/spicetify/cli/`)
+For config information, run "skidify -h config".
+For more information and reporting bugs: https://github.com/skidify/cli/`)
 }
 
 func helpConfig() {
@@ -532,13 +532,13 @@ replace_colors <0 | 1>
 spotify_launch_flags <string>
     Command-line flags used when launching/restarting Spotify.
     Separate each flag with "|".
-    List of valid flags: https://spicetify.app/docs/development/spotify-cli-flags
+    List of valid flags: https://skidify.app/docs/development/spotify-cli-flags
 
 always_enable_devtools <0 | 1>
     Whether Chrome DevTools is enabled when launching/restarting Spotify.
 
-check_spicetify_update <0 | 1>
-    Whether to always check for updates when running Spicetify.
+check_skidify_update <0 | 1>
+    Whether to always check for updates when running skidify.
 
 ` + utils.Bold("[Preprocesses]") + `
 disable_sentry <0 | 1>
@@ -555,7 +555,7 @@ remove_rtl_rule <0 | 1>
     Enable to remove all of them and improve render speed.
 
 expose_apis <0 | 1>
-    Leaks some Spotify's API, functions, objects to Spicetify global object that
+    Leaks some Spotify's API, functions, objects to skidify global object that
     are useful for making extensions to extend Spotify functionality.
 
 ` + utils.Bold("[AdditionalOptions]") + `

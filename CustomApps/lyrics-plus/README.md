@@ -1,4 +1,4 @@
-# Spicetify Custom App
+# skidify Custom App
 
 ### Lyrics Plus
 
@@ -32,13 +32,13 @@ Customise colors, change providers' priorities in config menu. Config menu locat
 To install, run:
 
 ```bash
-spicetify config custom_apps lyrics-plus
-spicetify apply
+skidify config custom_apps lyrics-plus
+skidify apply
 ```
 
 ### Credits
 
-- A few parts of app code are taken from Spotify official app, including SyncedLyricsPage, CSS animation and TabBar. Please do not distribute these code else where out of Spotify/Spicetify context.
+- A few parts of app code are taken from Spotify official app, including SyncedLyricsPage, CSS animation and TabBar. Please do not distribute these code else where out of Spotify/skidify context.
 - Netease synced lyrics parser is adapted from [mantou132/Spotify-Lyrics](https://github.com/mantou132/Spotify-Lyrics). Give it a Star if you like this app.
 - The algorithm for converting Japanese lyrics is based on [Hexenq's Kuroshiro](https://github.com/hexenq/kuroshiro).
 - The algorithm for converting Chinese lyrics is based on [BYVoid's OpenCC](https://github.com/BYVoid/OpenCC) via [nk2028's opencc-js](https://github.com/nk2028/opencc-js).

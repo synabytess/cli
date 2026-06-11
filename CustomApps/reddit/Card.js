@@ -9,24 +9,24 @@ class Card extends react.Component {
 		switch (this.uriType) {
 			case URI.Type.ALBUM:
 			case URI.Type.TRACK:
-				this.menuType = Spicetify.ReactComponent.AlbumMenu;
+				this.menuType = skidify.ReactComponent.AlbumMenu;
 				break;
 			case URI.Type.ARTIST:
-				this.menuType = Spicetify.ReactComponent.ArtistMenu;
+				this.menuType = skidify.ReactComponent.ArtistMenu;
 				break;
 			case URI.Type.PLAYLIST:
 			case URI.Type.PLAYLIST_V2:
-				this.menuType = Spicetify.ReactComponent.PlaylistMenu;
+				this.menuType = skidify.ReactComponent.PlaylistMenu;
 				break;
 			case URI.Type.SHOW:
-				this.menuType = Spicetify.ReactComponent.PodcastShowMenu;
+				this.menuType = skidify.ReactComponent.PodcastShowMenu;
 				break;
 		}
 		this.menuType = this.menuType || "div";
 	}
 
 	play(event) {
-		Spicetify.Player.playUri(this.uri, this.context);
+		skidify.Player.playUri(this.uri, this.context);
 		event.stopPropagation();
 	}
 
@@ -77,7 +77,7 @@ class Card extends react.Component {
 					className: "main-cardSubHeader-root main-type-mestoBold reddit-cardSubHeader",
 					as: "div",
 				},
-				react.createElement("span", null, Spicetify.Locale.get("user.followers", this.followersCount))
+				react.createElement("span", null, skidify.Locale.get("user.followers", this.followersCount))
 			);
 		}
 	}
@@ -88,7 +88,7 @@ class Card extends react.Component {
 		this.visual.upvotes && detail.push(`▲ ${this.upvotes}`);
 
 		return react.createElement(
-			Spicetify.ReactComponent.RightClickMenu || "div",
+			skidify.ReactComponent.RightClickMenu || "div",
 			{
 				menu: react.createElement(this.menuType, { uri: this.uri }),
 			},
@@ -138,7 +138,7 @@ class Card extends react.Component {
 								"div",
 								{
 									className: "main-playButton-PlayButton main-playButton-primary",
-									"aria-label": Spicetify.Locale.get("play"),
+									"aria-label": skidify.Locale.get("play"),
 									style: { "--size": "40px" },
 									onClick: this.play.bind(this),
 								},

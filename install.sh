@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Copyright 2022 khanhas.
-# Copyright 2023-present Spicetify contributors.
+# Copyright 2023-present skidify contributors.
 # Edited from project Denoland install script (https://github.com/denoland/deno_install)
 
 set -e
@@ -25,7 +25,7 @@ is_root() {
 
 if ! is_root && [ "${override_root:-0}" -eq 0 ]; then
     echo "The script was ran under sudo or as root. The script will now exit"
-    echo "If you hadn't intended to do this, please execute the script without root access to avoid problems with spicetify"
+    echo "If you hadn't intended to do this, please execute the script without root access to avoid problems with skidify"
     echo "To override this behavior, pass the '--root' parameter to this script"
     exit
 fi
@@ -52,7 +52,7 @@ command -v tar >/dev/null || { log "tar isn't installed!" >&2; exit 1; }
 command -v grep >/dev/null || { log "grep isn't installed!" >&2; exit 1; }
 
 # download uri
-releases_uri=https://github.com/spicetify/cli/releases
+releases_uri=https://github.com/skidify/cli/releases
 if [ -z "$tag" ]; then
     tag=$(curl -LsH 'Accept: application/json' $releases_uri/latest)
     tag=${tag%\,\"update_url*}
@@ -64,21 +64,21 @@ tag=${tag#v}
 
 log "FETCHING Version $tag"
 
-download_uri=$releases_uri/download/v$tag/spicetify-$tag-$target.tar.gz
+download_uri=$releases_uri/download/v$tag/skidify-$tag-$target.tar.gz
 
 # locations
-spicetify_install="$HOME/.spicetify"
-exe="$spicetify_install/spicetify"
-tar="$spicetify_install/spicetify.tar.gz"
+skidify_install="$HOME/.skidify"
+exe="$skidify_install/skidify"
+tar="$skidify_install/skidify.tar.gz"
 
 # installing
-[ ! -d "$spicetify_install" ] && log "CREATING $spicetify_install" && mkdir -p "$spicetify_install"
+[ ! -d "$skidify_install" ] && log "CREATING $skidify_install" && mkdir -p "$skidify_install"
 
 log "DOWNLOADING $download_uri"
 curl --fail --location --progress-bar --output "$tar" "$download_uri"
 
 log "EXTRACTING $tar"
-tar xzf "$tar" -C "$spicetify_install"
+tar xzf "$tar" -C "$skidify_install"
 
 log "SETTING EXECUTABLE PERMISSIONS TO $exe"
 chmod +x "$exe"
@@ -89,8 +89,8 @@ rm "$tar"
 notfound() {
     cat << EOINFO
 Manually add the directory to your \$PATH through your shell profile
-export SPICETIFY_INSTALL="$spicetify_install"
-export PATH="\$PATH:$spicetify_install"
+export skidify_INSTALL="$skidify_install"
+export PATH="\$PATH:$skidify_install"
 EOINFO
 }
 
@@ -99,7 +99,7 @@ endswith_newline() {
 }
 
 check() {
-    path="export PATH=\$PATH:$spicetify_install"
+    path="export PATH=\$PATH:$skidify_install"
     shellrc=$HOME/$1
 
     if [ "$1" = ".zshrc" ] && [ -n "${ZDOTDIR}" ]; then
@@ -114,15 +114,15 @@ check() {
 
     # Still checking again, in case touch command failed
     if [ -f "$shellrc" ]; then
-        if ! grep -q "$spicetify_install" "$shellrc"; then
-            log "APPENDING $spicetify_install to PATH in $shellrc"
+        if ! grep -q "$skidify_install" "$shellrc"; then
+            log "APPENDING $skidify_install to PATH in $shellrc"
             if ! endswith_newline "$shellrc"; then
                 echo >> "$shellrc"
             fi
             echo "${2:-$path}" >> "$shellrc"
-            export PATH="$spicetify_install:$PATH"
+            export PATH="$skidify_install:$PATH"
         else
-            log "spicetify path already set in $shellrc, continuing..."
+            log "skidify path already set in $shellrc, continuing..."
         fi
     else
         notfound
@@ -135,19 +135,19 @@ case $SHELL in
         [ -f "$HOME/.bashrc" ] && check ".bashrc"
         [ -f "$HOME/.bash_profile" ] && check ".bash_profile"
     ;;
-    *fish) check ".config/fish/config.fish" "fish_add_path $spicetify_install" ;;
+    *fish) check ".config/fish/config.fish" "fish_add_path $skidify_install" ;;
     *) notfound ;;
 esac
 
 echo
-log "spicetify v$tag was installed successfully to $spicetify_install"
-log "Run 'spicetify --help' to get started"
+log "skidify v$tag was installed successfully to $skidify_install"
+log "Run 'skidify --help' to get started"
 
-echo "Do you want to install spicetify Marketplace? (Y/n)"
+echo "Do you want to install skidify Marketplace? (Y/n)"
 read -r choice < /dev/tty
 if [ "$choice" = "N" ] || [ "$choice" = "n" ]; then
-    echo "spicetify Marketplace installation aborted"
+    echo "skidify Marketplace installation aborted"
     exit 0
 fi
-echo "Starting the spicetify Marketplace installation script.."
-curl -fsSL "https://raw.githubusercontent.com/spicetify/spicetify-marketplace/main/resources/install.sh" | sh
+echo "Starting the skidify Marketplace installation script.."
+curl -fsSL "https://raw.githubusercontent.com/skidify/skidify-marketplace/main/resources/install.sh" | sh

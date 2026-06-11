@@ -9,7 +9,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/spicetify/cli/src/utils"
+	"github.com/skidify/cli/src/utils"
 )
 
 const offlineBnkDeveloperMarker = "app-developer"

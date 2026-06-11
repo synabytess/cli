@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/go-ini/ini"
-	"github.com/spicetify/cli/src/utils"
+	"github.com/skidify/cli/src/utils"
 )
 
 // EditConfig changes one or multiple config value
@@ -111,7 +111,7 @@ func searchField(field string) *ini.Key {
 
 func changeSuccess(key, value string) {
 	utils.PrintSuccess(`Config changed: ` + key + ` = ` + value)
-	utils.PrintInfo(`Run "spicetify apply" to apply new config`)
+	utils.PrintInfo(`Run "skidify apply" to apply new config`)
 }
 
 func unchangeWarning(field, reason string) {

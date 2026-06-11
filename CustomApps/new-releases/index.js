@@ -9,7 +9,7 @@ const {
 	ReactDOM: reactDOM,
 	Platform: { History },
 	CosmosAsync,
-} = Spicetify;
+} = skidify;
 
 // Define a function called "render" to specify app entry point
 // This function will be used to mount app to main view.
@@ -42,7 +42,7 @@ const CONFIG = {
 
 let dismissed;
 try {
-	dismissed = JSON.parse(Spicetify.LocalStorage.get("new-releases:dismissed"));
+	dismissed = JSON.parse(skidify.LocalStorage.get("new-releases:dismissed"));
 	if (!Array.isArray(dismissed)) throw "";
 } catch {
 	dismissed = [];
@@ -115,19 +115,19 @@ class Grid extends react.Component {
 	removeCards(id, type) {
 		switch (type) {
 			case "reset":
-				Spicetify.showNotification("Reset dismissed releases");
+				skidify.showNotification("Reset dismissed releases");
 				dismissed = [];
 				break;
 			case "undo":
-				if (!dismissed[0]) Spicetify.showNotification("Nothing to undo", true);
-				else Spicetify.showNotification("Undone dismissal");
+				if (!dismissed[0]) skidify.showNotification("Nothing to undo", true);
+				else skidify.showNotification("Undone dismissal");
 				dismissed = id ? dismissed.filter((item) => item !== id) : dismissed.slice(0, -1);
 				break;
 			default:
 				dismissed.push(id);
 				break;
 		}
-		Spicetify.LocalStorage.set("new-releases:dismissed", JSON.stringify(dismissed));
+		skidify.LocalStorage.set("new-releases:dismissed", JSON.stringify(dismissed));
 		this.updatePostsVisual();
 	}
 
@@ -209,7 +209,7 @@ class Grid extends react.Component {
 		gridUpdatePostsVisual = this.updatePostsVisual.bind(this);
 		removeCards = this.removeCards.bind(this);
 
-		this.configButton = new Spicetify.Menu.Item(
+		this.configButton = new skidify.Menu.Item(
 			"New Releases config",
 			false,
 			openConfig,
@@ -237,9 +237,9 @@ class Grid extends react.Component {
 	}
 
 	render() {
-		const expFeatures = JSON.parse(localStorage.getItem("spicetify-exp-features") || "{}");
+		const expFeatures = JSON.parse(localStorage.getItem("skidify-exp-features") || "{}");
 		const isGlobalNav = expFeatures?.enableGlobalNavBar?.value !== "control";
-		const version = Spicetify.Platform.version.split(".").map((i) => Number.parseInt(i));
+		const version = skidify.Platform.version.split(".").map((i) => Number.parseInt(i));
 
 		const tabBarMargin = {
 			marginTop: isGlobalNav || (version[0] === 1 && version[1] === 2 && version[2] >= 45) ? "60px" : "0px",
@@ -255,14 +255,14 @@ class Grid extends react.Component {
 					className: "new-releases-header",
 					style: tabBarMargin,
 				},
-				react.createElement("h1", null, Spicetify.Locale.get("new_releases")),
+				react.createElement("h1", null, skidify.Locale.get("new_releases")),
 				react.createElement(
 					"div",
 					{
 						className: "new-releases-controls-container",
 					},
 					react.createElement(ButtonText, {
-						text: Spicetify.Locale.get("playlist.extender.refresh"),
+						text: skidify.Locale.get("playlist.extender.refresh"),
 						onClick: this.reload.bind(this),
 					}),
 					react.createElement(ButtonText, {
@@ -284,13 +284,13 @@ async function getArtistList() {
 		offset: 0,
 		limit: 50000,
 	};
-	const artists = await Spicetify.Platform.LibraryAPI.getContents(config);
+	const artists = await skidify.Platform.LibraryAPI.getContents(config);
 	count(true);
 	return artists.items ?? [];
 }
 
 async function getArtistEverything(artist) {
-	const { data, errors } = await Spicetify.GraphQL.Request(
+	const { data, errors } = await skidify.GraphQL.Request(
 		{
 			name: "queryArtistDiscographyAll",
 			operation: "query",
@@ -309,14 +309,14 @@ async function getArtistEverything(artist) {
 	const releases = data?.artistUnion.discography.all.items.flatMap((r) => r.releases.items);
 	const items = [];
 	const types = [
-		[CONFIG.album, releases.filter((r) => r.type === "ALBUM"), Spicetify.Locale.get("album")],
+		[CONFIG.album, releases.filter((r) => r.type === "ALBUM"), skidify.Locale.get("album")],
 		// Appears on has a separate GraphQL query but does not provide enough information (release date), which requires recursively making requests for each album
-		// [CONFIG["appears-on"], releases.appears_on?.releases, Spicetify.Locale.get("artist.appears-on")],
-		[CONFIG.compilations, releases.filter((r) => r.type === "COMPILATION"), Spicetify.Locale.get("compilation")],
+		// [CONFIG["appears-on"], releases.appears_on?.releases, skidify.Locale.get("artist.appears-on")],
+		[CONFIG.compilations, releases.filter((r) => r.type === "COMPILATION"), skidify.Locale.get("compilation")],
 		[
 			CONFIG["single-ep"],
 			releases.filter((r) => r.type === "SINGLE" || r.type === "EP"),
-			`${Spicetify.Locale.get("single")}/${Spicetify.Locale.get("ep")}`,
+			`${skidify.Locale.get("single")}/${skidify.Locale.get("ep")}`,
 		],
 	];
 	for (const type of types) {
@@ -333,12 +333,12 @@ async function getArtistEverything(artist) {
 }
 
 async function getPodcastList() {
-	const body = await Spicetify.Platform.LibraryAPI.getShows({ limit: 50000 });
+	const body = await skidify.Platform.LibraryAPI.getShows({ limit: 50000 });
 	return body.items ?? [];
 }
 
 async function getPodcastRelease(uri) {
-	const body = await Spicetify.Platform.ShowAPI.getContents(uri, { limit: 50000 });
+	const body = await skidify.Platform.ShowAPI.getContents(uri, { limit: 50000 });
 	return body.items;
 }
 
@@ -370,7 +370,7 @@ const count = (() => {
 
 async function fetchTracks() {
 	const artistList = await getArtistList();
-	Spicetify.showNotification(`Fetching releases from ${artistList.length} artists`);
+	skidify.showNotification(`Fetching releases from ${artistList.length} artists`);
 
 	const requests = artistList.map(async (obj) => {
 		return await getArtistEverything(obj).catch((err) => {
@@ -384,7 +384,7 @@ async function fetchTracks() {
 
 async function fetchPodcasts() {
 	const items = [];
-	const itemTypeStr = Spicetify.Locale.get("card.tag.episode");
+	const itemTypeStr = skidify.Locale.get("card.tag.episode");
 	for (const podcast of await getPodcastList()) {
 		const tracks = await getPodcastRelease(podcast.uri);
 		if (!tracks) continue;

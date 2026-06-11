@@ -1,4 +1,4 @@
-declare namespace Spicetify {
+declare namespace skidify {
 	type Icon =
 		| "addToPlaylist"
 		| "addToQueue"
@@ -352,9 +352,9 @@ declare namespace Spicetify {
 		 */
 		const origin: any;
 		/**
-		 * Register a listener `type` on Spicetify.Player.
+		 * Register a listener `type` on skidify.Player.
 		 *
-		 * On default, `Spicetify.Player` always dispatch:
+		 * On default, `skidify.Player` always dispatch:
 		 *  - `songchange` type when player changes track.
 		 *  - `onplaypause` type when player plays or pauses.
 		 *  - `onprogress` type when track progress changes.
@@ -394,9 +394,9 @@ declare namespace Spicetify {
 		 */
 		function decreaseVolume(): void;
 		/**
-		 * Dispatches an event at `Spicetify.Player`.
+		 * Dispatches an event at `skidify.Player`.
 		 *
-		 * On default, `Spicetify.Player` always dispatch
+		 * On default, `skidify.Player` always dispatch
 		 *  - `songchange` type when player changes track.
 		 *  - `onplaypause` type when player plays or pauses.
 		 *  - `onprogress` type when track progress changes.
@@ -830,7 +830,7 @@ declare namespace Spicetify {
 	 *
 	 * Documentation: https://craig.is/killing/mice v1.6.5
 	 *
-	 * Spicetify.Keyboard is wrapper of this library to be compatible with legacy Spotify,
+	 * skidify.Keyboard is wrapper of this library to be compatible with legacy Spotify,
 	 * so new extension should use this library instead.
 	 */
 	function Mousetrap(element?: any): void;
@@ -1417,11 +1417,11 @@ declare namespace Spicetify {
 			 * The menu UI to render inside of the context menu.
 			 */
 			menu:
-				| typeof Spicetify.ReactComponent.Menu
-				| typeof Spicetify.ReactComponent.AlbumMenu
-				| typeof Spicetify.ReactComponent.PodcastShowMenu
-				| typeof Spicetify.ReactComponent.ArtistMenu
-				| typeof Spicetify.ReactComponent.PlaylistMenu;
+				| typeof skidify.ReactComponent.Menu
+				| typeof skidify.ReactComponent.AlbumMenu
+				| typeof skidify.ReactComponent.PodcastShowMenu
+				| typeof skidify.ReactComponent.ArtistMenu
+				| typeof skidify.ReactComponent.PlaylistMenu;
 			/**
 			 * A child of the context menu. Should be `<button>`, `<a>`,
 			 * a custom react component that forwards a ref to a `<button>` or `<a>`,
@@ -1764,21 +1764,21 @@ declare namespace Spicetify {
 		 * Generic context menu provider
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.ContextMenuProps
+		 * @see skidify.ReactComponent.ContextMenuProps
 		 */
 		const ContextMenu: any;
 		/**
 		 * Wrapper of ReactComponent.ContextMenu with props: action = 'toggle' and trigger = 'right-click'
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.ContextMenuProps
+		 * @see skidify.ReactComponent.ContextMenuProps
 		 */
 		const RightClickMenu: any;
 		/**
 		 * Outer layer contain ReactComponent.MenuItem(s)
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.MenuProps
+		 * @see skidify.ReactComponent.MenuProps
 		 */
 		const Menu: any;
 		/**
@@ -1786,7 +1786,7 @@ declare namespace Spicetify {
 		 * Used as ReactComponent.Menu children
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.MenuItemProps
+		 * @see skidify.ReactComponent.MenuItemProps
 		 */
 		const MenuItem: any;
 		/**
@@ -1807,7 +1807,7 @@ declare namespace Spicetify {
 		 * Useful for accessibility
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.TooltipProps
+		 * @see skidify.ReactComponent.TooltipProps
 		 */
 		const TooltipWrapper: any;
 		/**
@@ -1815,7 +1815,7 @@ declare namespace Spicetify {
 		 * @since Spotify `1.1.95`
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.IconComponentProps
+		 * @see skidify.ReactComponent.IconComponentProps
 		 */
 		const IconComponent: any;
 		/**
@@ -1823,14 +1823,14 @@ declare namespace Spicetify {
 		 * @since Spotify `1.1.95`
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.TextComponentProps
+		 * @see skidify.ReactComponent.TextComponentProps
 		 */
 		const TextComponent: any;
 		/**
 		 * Component to render Spotify-style confirm dialog
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.ConfirmDialogProps
+		 * @see skidify.ReactComponent.ConfirmDialogProps
 		 */
 		const ConfirmDialog: any;
 		/**
@@ -1839,28 +1839,28 @@ declare namespace Spicetify {
 		 * Used in progress bar, volume slider, crossfade settings, etc.
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.SliderProps
+		 * @see skidify.ReactComponent.SliderProps
 		 */
 		const Slider: any;
 		/**
 		 * Component to render Spotify primary button
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.ButtonProps
+		 * @see skidify.ReactComponent.ButtonProps
 		 */
 		const ButtonPrimary: any;
 		/**
 		 * Component to render Spotify secondary button
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.ButtonProps
+		 * @see skidify.ReactComponent.ButtonProps
 		 */
 		const ButtonSecondary: any;
 		/**
 		 * Component to render Spotify tertiary button
 		 *
 		 * Props:
-		 * @see Spicetify.ReactComponent.ButtonProps
+		 * @see skidify.ReactComponent.ButtonProps
 		 */
 		const ButtonTertiary: any;
 	}
@@ -1953,7 +1953,7 @@ declare namespace Spicetify {
 	 */
 	const Tippy: any;
 	/**
-	 * Spicetify's predefined props for Tippy.js
+	 * skidify's predefined props for Tippy.js
 	 * Used to mimic Spotify's tooltip behavior
 	 */
 	const TippyProps: any;
@@ -1988,7 +1988,7 @@ declare namespace Spicetify {
 	}
 
 	/**
-	 * Spicetify's QraphQL wrapper for Spotify's GraphQL API endpoints
+	 * skidify's QraphQL wrapper for Spotify's GraphQL API endpoints
 	 */
 	namespace GraphQL {
 		/**
@@ -2094,7 +2094,7 @@ declare namespace Spicetify {
 		const Definitions: Record<Query | string, any>;
 		/**
 		 * Sends a GraphQL query to Spotify.
-		 * @description A preinitialized version of `Spicetify.GraphQL.Handler` using current context.
+		 * @description A preinitialized version of `skidify.GraphQL.Handler` using current context.
 		 * @param query Query to send
 		 * @param variables Variables to use
 		 * @param context Context to use

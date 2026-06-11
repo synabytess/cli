@@ -5,14 +5,14 @@
 /// <reference path="../globals.d.ts" />
 
 (function SkipVideo() {
-	Spicetify.Player.addEventListener("songchange", () => {
-		const data = Spicetify.Player.data || Spicetify.Queue;
+	skidify.Player.addEventListener("songchange", () => {
+		const data = skidify.Player.data || skidify.Queue;
 		if (!data) return;
 
 		const meta = data.item.metadata;
 		// Ads are also video media type so I need to exclude them out.
 		if (meta["media.type"] === "video" && meta.is_advertisement !== "true") {
-			Spicetify.Player.next();
+			skidify.Player.next();
 		}
 	});
 })();

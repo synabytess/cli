@@ -13,7 +13,7 @@ const Providers = {
 		const id = info.uri.split(":")[2];
 		let body;
 		try {
-			body = await Spicetify.CosmosAsync.get(`${baseURL + id}?format=json&vocalRemoval=false&market=from_token`);
+			body = await skidify.CosmosAsync.get(`${baseURL + id}?format=json&vocalRemoval=false&market=from_token`);
 		} catch {
 			return { error: "Request error", uri: info.uri };
 		}

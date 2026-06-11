@@ -11,7 +11,7 @@
 	const progressContainer = playbackBar?.querySelector(".playback-progressbar-container");
 	const rangeInput = progressContainer?.querySelector('input[type="range"]');
 	const bar = rangeInput?.closest("label")?.nextElementSibling;
-	if (!(bar && Spicetify.Player)) {
+	if (!(bar && skidify.Player)) {
 		setTimeout(LoopyLoop, 100);
 		return;
 	}
@@ -120,20 +120,20 @@
 	}
 
 	function saveState() {
-		const uri = Spicetify.Player.data?.item?.uri;
+		const uri = skidify.Player.data?.item?.uri;
 		if (!uri) return;
-		Spicetify.LocalStorage.set(`loopyLoop:${uri}`, JSON.stringify({ start, end, skipZones }));
+		skidify.LocalStorage.set(`loopyLoop:${uri}`, JSON.stringify({ start, end, skipZones }));
 	}
 
 	function loadState() {
-		const uri = Spicetify.Player.data?.item?.uri;
+		const uri = skidify.Player.data?.item?.uri;
 		start = null;
 		end = null;
 		skipZones = [];
 		pendingSkipStart = null;
 		if (!uri) return;
 		try {
-			const saved = Spicetify.LocalStorage.get(`loopyLoop:${uri}`);
+			const saved = skidify.LocalStorage.get(`loopyLoop:${uri}`);
 			if (saved) {
 				const data = JSON.parse(saved);
 				start = data.start ?? null;
@@ -213,7 +213,7 @@
 	document.body.append(moveSubmenu);
 
 	function applyMoveAdjustment(deltaSeconds) {
-		const durationMs = Spicetify.Player.getDuration();
+		const durationMs = skidify.Player.getDuration();
 		if (!durationMs) return;
 		const delta = (deltaSeconds * 1000) / durationMs;
 		if (activeMarkerType === "start") {
@@ -249,23 +249,23 @@
 	});
 
 	// Skip zone seeking only — no loop-back behavior
-	Spicetify.Player.addEventListener("onprogress", (event) => {
+	skidify.Player.addEventListener("onprogress", (event) => {
 		const ts = event?.timeStamp ?? performance.now();
-		const percent = Spicetify.Player.getProgressPercent();
+		const percent = skidify.Player.getProgressPercent();
 
 		// Repeat-mode restart: song restarted from 0 after hitting ], seek to [
 		if (seekStartPendingUri !== null && percent < 0.05) {
-			const currentUri = Spicetify.Player.data?.item?.uri;
+			const currentUri = skidify.Player.data?.item?.uri;
 			if (currentUri === seekStartPendingUri && start !== null) {
 				seekStartPendingUri = null;
-				Spicetify.Player.seek(start);
+				skidify.Player.seek(start);
 				return;
 			}
 			seekStartPendingUri = null;
 		}
 
 		// Detect prev button press: jump to ~0 from past Spotify's 3-second restart threshold
-		const durationMs = Spicetify.Player.getDuration() || 0;
+		const durationMs = skidify.Player.getDuration() || 0;
 		const threeSecFrac = durationMs > 0 ? 3000 / durationMs : 0.02;
 		const nearZeroFrac = durationMs > 0 ? 1500 / durationMs : 0.01;
 		if (prevProgressPercent > threeSecFrac && percent < nearZeroFrac) {
@@ -277,13 +277,13 @@
 				setTimeout(() => {
 					navigatingBack = false;
 				}, 2000);
-				Spicetify.Player.back();
+				skidify.Player.back();
 				return;
 			} else {
 				// First press — go to [ (or stay at 0 if no start set)
 				prevPressedAt = ts;
 				prevProgressPercent = percent;
-				if (start !== null) Spicetify.Player.seek(start);
+				if (start !== null) skidify.Player.seek(start);
 				return;
 			}
 		}
@@ -294,23 +294,23 @@
 			if (navigatingBack) return;
 			if (ts - lastStartEnforce > 500) {
 				lastStartEnforce = ts;
-				Spicetify.Player.seek(start);
+				skidify.Player.seek(start);
 			}
 			return;
 		}
 
 		// Song end enforcement: at ], either loop back (repeat-one) or advance to next track
 		if (end !== null && percent >= end) {
-			// Spicetify.Player.getRepeat(): 0 = off, 1 = repeat context, 2 = repeat track
-			if (Spicetify.Player.getRepeat() === 2) {
+			// skidify.Player.getRepeat(): 0 = off, 1 = repeat context, 2 = repeat track
+			if (skidify.Player.getRepeat() === 2) {
 				if (ts - lastEndLoopSeek > 500) {
 					lastEndLoopSeek = ts;
-					Spicetify.Player.seek(start ?? 0);
+					skidify.Player.seek(start ?? 0);
 				}
 			} else if (ts - lastNextCall > 2000) {
 				lastNextCall = ts;
-				seekStartPendingUri = Spicetify.Player.data?.item?.uri ?? null;
-				Spicetify.Player.next();
+				seekStartPendingUri = skidify.Player.data?.item?.uri ?? null;
+				skidify.Player.next();
 			}
 			return;
 		}
@@ -325,7 +325,7 @@
 					if (i !== lastSkippedZoneIdx || ts - lastSkipSeek > 500) {
 						lastSkipSeek = ts;
 						lastSkippedZoneIdx = i;
-						Spicetify.Player.seek(zone.end);
+						skidify.Player.seek(zone.end);
 					}
 					break;
 				}
@@ -334,10 +334,10 @@
 		}
 	});
 
-	Spicetify.Player.addEventListener("songchange", () => {
+	skidify.Player.addEventListener("songchange", () => {
 		navigatingBack = false;
 		// Clear seekStartPendingUri only when the new song differs — preserves repeat-one seek-to-[ behavior
-		if (Spicetify.Player.data?.item?.uri !== seekStartPendingUri) seekStartPendingUri = null;
+		if (skidify.Player.data?.item?.uri !== seekStartPendingUri) seekStartPendingUri = null;
 		loadState();
 		drawOnBar();
 		drawSkipMarkers();
@@ -369,7 +369,7 @@
 
 	const startBtn = createMenuItem("Set song start", () => {
 		if (end !== null && mouseOnBarPercent >= end) {
-			Spicetify.showNotification("Song start must be before song end");
+			skidify.showNotification("Song start must be before song end");
 			return;
 		}
 		start = mouseOnBarPercent;
@@ -378,7 +378,7 @@
 	});
 	const endBtn = createMenuItem("Set song end", () => {
 		if (start !== null && mouseOnBarPercent <= start) {
-			Spicetify.showNotification("Song end must be after song start");
+			skidify.showNotification("Song end must be after song start");
 			return;
 		}
 		end = mouseOnBarPercent;
@@ -399,7 +399,7 @@
 	});
 	const skipEndBtn = createMenuItem("Set section skip end", () => {
 		if (pendingSkipStart === null) {
-			Spicetify.showNotification("No section skip start selected!");
+			skidify.showNotification("No section skip start selected!");
 			return;
 		}
 		const s = Math.min(pendingSkipStart, mouseOnBarPercent);
@@ -410,7 +410,7 @@
 				saveState();
 				drawSkipMarkers();
 			} else {
-				Spicetify.showNotification("Maximum 10 skip zones reached");
+				skidify.showNotification("Maximum 10 skip zones reached");
 			}
 		}
 		pendingSkipStart = null;
@@ -579,7 +579,7 @@
 	// Load state for the currently playing song on startup.
 	// Retry until the player has track data (uri may be null immediately after init).
 	function tryLoadInitialState(attemptsLeft) {
-		if (Spicetify.Player.data?.item?.uri) {
+		if (skidify.Player.data?.item?.uri) {
 			loadState();
 			drawOnBar();
 			drawSkipMarkers();
@@ -592,8 +592,8 @@
 	// Toolbar button
 	try {
 		const markerIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" height="16" width="16"><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="3" y="3" width="2" height="10" rx="1"/><rect x="11" y="3" width="2" height="10" rx="1"/><rect x="6" y="5" width="1.5" height="6" rx="0.75"/><rect x="8.5" y="5" width="1.5" height="6" rx="0.75"/></svg>`;
-		const toolbarBtn = new Spicetify.Playbar.Button("Loopy Loop", markerIcon, () => {
-			mouseOnBarPercent = Spicetify.Player.getProgressPercent();
+		const toolbarBtn = new skidify.Playbar.Button("Loopy Loop", markerIcon, () => {
+			mouseOnBarPercent = skidify.Player.getProgressPercent();
 			setupActiveMarker(null, -1);
 			const rect = toolbarBtn.element.getBoundingClientRect();
 			openContextMenu(rect.left, rect.top);

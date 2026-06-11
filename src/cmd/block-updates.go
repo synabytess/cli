@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/spicetify/cli/src/utils"
+	"github.com/skidify/cli/src/utils"
 )
 
 // Block spotify updates. Taken from https://github.com/Delusoire/bespoke-cli/blob/main/cmd/spotify/update.go

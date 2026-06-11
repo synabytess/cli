@@ -5,28 +5,28 @@
 /// <reference path="../globals.d.ts" />
 
 (async function ChristianSpotify() {
-	if (!Spicetify.LocalStorage) {
+	if (!skidify.LocalStorage) {
 		setTimeout(ChristianSpotify, 1000);
 		return;
 	}
-	await new Promise((res) => Spicetify.Events.webpackLoaded.on(res));
+	await new Promise((res) => skidify.Events.webpackLoaded.on(res));
 
-	let isEnabled = Spicetify.LocalStorage.get("ChristianMode") === "1";
+	let isEnabled = skidify.LocalStorage.get("ChristianMode") === "1";
 
-	new Spicetify.Menu.Item("Christian mode", isEnabled, (self) => {
+	new skidify.Menu.Item("Christian mode", isEnabled, (self) => {
 		isEnabled = !isEnabled;
-		Spicetify.LocalStorage.set("ChristianMode", isEnabled ? "1" : "0");
+		skidify.LocalStorage.set("ChristianMode", isEnabled ? "1" : "0");
 		self.setState(isEnabled);
 	}).register();
 
-	Spicetify.Player.addEventListener("songchange", () => {
+	skidify.Player.addEventListener("songchange", () => {
 		if (!isEnabled) return;
-		const data = Spicetify.Player.data || Spicetify.Queue;
+		const data = skidify.Player.data || skidify.Queue;
 		if (!data) return;
 
 		const isExplicit = data.item.metadata.is_explicit;
 		if (isExplicit === "true") {
-			Spicetify.Player.next();
+			skidify.Player.next();
 		}
 	});
 })();
